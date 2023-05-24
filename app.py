@@ -1,9 +1,8 @@
 import streamlit as st
 
-st.set_page_config(page_title="PDF Analyzer",page_icon=':shark:')
+st.set_page_config(page_title="LeaseGPT",page_icon=':shark:')
 
 def main():
-    print("Hello World")
     st.title("LeaseGPT")
     st.write("Your AI Leasing Assistant")
     selection = st.selectbox("Choose a city", ["Seattle", "LA", "San Francisco", "New York City"])
