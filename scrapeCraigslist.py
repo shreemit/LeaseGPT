@@ -1,84 +1,54 @@
-# work with dataframes
-import pandas as pd
-import numpy as np
-
-# we'll use this to store the a dataframe to csv at a later stage
-import csv
-
-# make HTTP requests to a specified URL
-import requests
-
-# web scraping library
-from bs4 import BeautifulSoup
-
-# time management
 import time
-from random import randint
+# from bs4 import BeautifulSoup
+# from urllib.request import Request, urlopen
+# import re
+# import urllib.request
+# # from urlparse import urljoin
 
-from tqdm import tqdm
-# from collections import Counter
+# req = Request("https://seattle.craigslist.org/search/apa#search=1~gallery~0~0",
+#                headers={'User-Agent': 'Mozilla/5.0'})
+# html_page = urlopen(req)
 
-# regular expressions
-import re
+# soup = BeautifulSoup(html_page, "html.parser")
+# # print(soup.body)
+# links = []
+# for link in soup.find_all('a'):
+#     links.append(link)
 
-# a link to each vehicle post will be stored here
-links = []
+# print(links)
 
-#  all pages in a city will be stored in this list
-list_of_cities = []
+# import pandas as pdcl
+# from bs4 import BeautifulSoup
+# import cloudscraper
+# scraper = cloudscraper.create_scraper()
+# kw= ['Oxford', 'Oxfordshire']
+# data = []
+# for k in kw:
+#     for page in range(1,3):
+#         url = f"https://www.zoopla.co.uk/for-sale/property/oxford/?search_source=home&q={k}&pn={page}"
+#         page = scraper.get(url)
+#         #print(page)
+#         soup = BeautifulSoup(page.content, "html.parser")
+    
+#         for card in soup.select('[data-testid="regular-listings"] [id^="listing"]'):
+#             print(card.a.get("href"))
+#             link = "https://www.zoopla.co.uk" + card.a.get("href")
+#             print(link)
+#             #data.append({'link':link})
 
-# list of city names we want to get data for
-cities = ['dallas','chicago', 'newyork', 'sfbay', 'losangeles', \
-        'houston', 'phoenix', 'philadelphia', 'sanantonio', 'washingtondc',\
-       'boston', 'nashville', 'atlanta', 'miami', 'seattle']
-
-
-for city in cities:
-    # each city has approxiamtely 1800 pages for the "cars for sale by owner" category
-    # we'll keep track of these pages with page_number variable below
-    page_number = 1
-
-    # this while loop cycles through all 1800 pages
-    while page_number <= 1800:
-        # city_link variable takes a a different city name from the cities every time through the loop
-        city_link = "https://" + str(city) + ".craigslist.org/d/cars-trucks-by-owner/search/cto?s=" + \
-                                str(page_number) + "&hasPic=1"
-
-        # we                         
-        list_of_cities.append(city_link)
-        page_number +=120
-
-# URLs counter
-car_urls = 1      
-for each_city_page in list_of_cities:
-    links_in_each_city_page = requests.get(each_city_page)
-    # parse html object from page to BS object
-    soup = BeautifulSoup(links_in_each_city_page.content, 'html.parser')
-
-    try:
-        #get the macro-container for the car posts for that page
-        posts = soup.find_all('a', class_= 'result-image gallery')
-
-        # get all the html links in the page and append them to a list
-        for link in tqdm(posts):
-            l = link.get('href')
-            links.append(l)
-
-    except:
-        pass
-
-    if car_urls % 5 == 0:
-        city_link = l.strip()
-        start = city_link.find("//") + len("//")
-        end = city_link.find(".")
-        city_string = city_link[start:end]
-        print('Number of pages returned --> ' + str(car_urls) + '---' + city_string)
-            
-
-    # this code just helps us keep count of the looping progress                     
-
-
-    # we add a sleep timer to manage our server requests
-    time.sleep(randint(0,1))
-    car_urls +=1
-print('finished scraping all the links')
+from selenium import webdriver
+from bs4 import BeautifulSoup
+browser = webdriver.Firefox()
+options = webdriver.FirefoxOptions()
+options.add_argument('--enable-javascript')
+options.add_argument("--headless")
+browser.get("https://seattle.craigslist.org/search/apa#search=1~gallery~0~0")
+time.sleep(1)
+html = browser.page_source
+soup = BeautifulSoup(html, 'html.parser')
+# Find all the links on the page from galary inner
+L = soup.find_all('a', class_='main')
+time.sleep(1)
+browser.get(L[0]['href'])
+soup2 = BeautifulSoup(browser.page_source, 'html.parser')
+print(soup2.find_all('section', class_='body'))
