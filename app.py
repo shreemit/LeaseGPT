@@ -17,8 +17,8 @@ def main():
     else:
         st.write("You haven't selected anything yet.")
 
-    st.sidebar.title("Hello World")
-    st.sidebar.write("This is Shreemit")
+    st.sidebar.title("Hello ")
+    st.sidebar.write("This is your personal leasing agent")
 
 
     
