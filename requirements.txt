@@ -1,0 +1,6 @@
+beautifulsoup4==4.11.2
+langchain==0.0.181
+selenium==4.9.1
+streamlit==1.19.0
+torch==1.13.1
+transformers==4.30.0.dev0
