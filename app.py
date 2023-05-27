@@ -3,6 +3,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.llms import OpenAI
+from langchain import PromptTemplate, HuggingFaceHub, LLMChain
 from langchain.chains.question_answering import load_qa_chain
 import pickle
 
@@ -25,6 +26,25 @@ def main():
 
     api_key = st.text_input('Please enter your OpenAI key')
 
+    template = """Question: {question}
+
+    Answer: """
+    prompt = PromptTemplate(template=template, input_variables=["question"])
+    
+    davinci = OpenAI(model_name='text-davinci-003')
+
+    llm_chain = LLMChain(
+        prompt=prompt,
+        llm=davinci
+    )
+
+    qs = [
+        {'question': "Which NFL team won the Super Bowl in the 2010 season?"},
+        {'question': "If I am 6 ft 4 inches, how tall am I in centimeters?"},
+        {'question': "Who was the 12th person on the moon?"},
+        {'question': "How many eyes does a blade of grass have?"}
+    ]
+    llm_chain.generate(qs)
 
     st.sidebar.title("Hello ")
     st.sidebar.write("This is your personal leasing agent")
