@@ -4,4 +4,4 @@ selenium==4.9.1
 streamlit==1.19.0
 torch==1.13.1
 transformers
-dotenv-python
+python-dotenv==1.0.0
