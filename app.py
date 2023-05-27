@@ -6,8 +6,11 @@ from langchain.llms import OpenAI
 from langchain import PromptTemplate, HuggingFaceHub, LLMChain
 from langchain.chains.question_answering import load_qa_chain
 import pickle
+import os
+from dotenv import load_dotenv
 
 st.set_page_config(page_title="LeaseGPT",page_icon=':shark:')
+
 
 def main():
     st.title("LeaseGPT")
@@ -25,26 +28,36 @@ def main():
         st.write("You haven't selected anything yet.")
 
     api_key = st.text_input('Please enter your OpenAI key')
+    if api_key:
+        os.environ["OPENAI_API_KEY"] = api_key
 
-    template = """Question: {question}
+    load_dotenv()
 
-    Answer: """
-    prompt = PromptTemplate(template=template, input_variables=["question"])
-    
-    davinci = OpenAI(model_name='text-davinci-003')
+    if os.environ['OPENAI_API_KEY'] is not None:
+        print("OPEN AI Key",os.environ['OPENAI_API_KEY'])
 
-    llm_chain = LLMChain(
-        prompt=prompt,
-        llm=davinci
-    )
+        template = """Question: {question}
 
-    qs = [
-        {'question': "Which NFL team won the Super Bowl in the 2010 season?"},
-        {'question': "If I am 6 ft 4 inches, how tall am I in centimeters?"},
-        {'question': "Who was the 12th person on the moon?"},
-        {'question': "How many eyes does a blade of grass have?"}
-    ]
-    llm_chain.generate(qs)
+        Answer: """
+        prompt = PromptTemplate(template=template, input_variables=["question"])
+        try: 
+            davinci = OpenAI(model_name='text-davinci-003', openai_api_key=api_key)
+
+            llm_chain = LLMChain(
+                prompt=prompt,
+                llm=davinci
+            )
+
+            qs = [
+                {'question': "Which NFL team won the Super Bowl in the 2010 season?"},
+                {'question': "If I am 6 ft 4 inches, how tall am I in centimeters?"},
+                {'question': "Who was the 12th person on the moon?"},
+                {'question': "How many eyes does a blade of grass have?"}
+            ]
+            # llm_chain.generate(qs)
+
+        except:
+            st.write("Please enter a valid OpenAI API Key")
 
     st.sidebar.title("Hello ")
     st.sidebar.write("This is your personal leasing agent")
