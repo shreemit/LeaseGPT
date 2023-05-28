@@ -16,6 +16,7 @@ st.set_page_config(page_title="🏡 LeaseGPT", page_icon=":shark:")
 
 
 def main():
+    os.environ["OPENAI_API_KEY"] = ""
     st.title("🚪🏡 LeaseGPT")
     st.write("Your AI Leasing Assistant")
     
@@ -51,17 +52,20 @@ def main():
         )
 
         docs = [doc1, doc2, doc3, doc4]
-
+        
         chunks = []
 
-        # # Splitting the text into chunks
+        # Splitting the text into chunks
         for doc in docs:
-            if len(doc) > 1000:
+            if len(doc) > 1200:
                 chunk_doc = text_splitter.split_text(doc)
                 for chunk in chunk_doc:
                     chunks.append(chunk)
             else:
                 chunks.append(doc)
+
+        # st.write("Number of chunks", chunks)
+        # chunks = text_splitter.split_text(text)
 
         store_name = "craigslist"
         template =  '''I want you to act to act like a leasing agent for me. Giving me the best options always based on what you read below. 
@@ -75,27 +79,33 @@ def main():
             if os.path.exists(f"{store_name}.pkl"):
                 with open(f"{store_name}.pkl", "rb") as f:
                     VectorStore = pickle.load(f)
-                    # st.write("Embeddings Loaded from the Disk")
+                    st.write("Embeddings Loaded from the Disk")
             else:
                 embeddings = OpenAIEmbeddings()
                 VectorStore = FAISS.from_texts(chunks, embedding=embeddings)
                 with open(f"{store_name}.pkl", "wb") as f:
                     pickle.dump(VectorStore, f)
-                    # st.write("Embeddings Created and Saved to Disk")
+                    st.write("Embeddings Created and Saved to Disk")
 
             query = st.text_input("Ask your question")
+            
             if query:
+                print("Query", VectorStore, query)
                 docs = VectorStore.similarity_search(query, k=3)
+                print("Docs", docs)
                 davinci = OpenAI(model_name="text-davinci-003")
                 chain = load_qa_chain(llm=davinci, chain_type="stuff")
                 prompt.format(question=query)
                 question = prompt.format(question=query)
+                print("Question", question)
                 # st.write("Prompt", question)
                 # st.write("Docs", docs)
                 with get_openai_callback() as callback:
-                    response = chain.run(input_documents=docs, question=template)
+                    response = chain.run(input_documents=docs, question=question)
+                    print("Response", response)
                     # st.write(chain)
                     st.write("Cost for query", callback.total_cost)
+                    
                     st.write(response)
                 print("Response", response)
 
@@ -103,10 +113,10 @@ def main():
             if os.environ["OPENAI_API_KEY"] is None:
                 st.write("Please enter a valid OpenAI API Key")
 
-    st.sidebar.title("Hello ")
+    st.sidebar.title("Hello")
     st.sidebar.write("This is your personal leasing agent LeasingGPT")
     st.sidebar.write("I can help you find the best apartment for you")
-    st.sidebar.write("Made by Shreemit")
+    st.sidebar.write("Made by Shreemit https://github.com/shreemit")
 
 if __name__ == "__main__":
     main()
