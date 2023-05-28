@@ -8,5 +8,8 @@ python-dotenv==1.0.0
 hugchat
 streamlit-chat
 streamlit-extras
-faiss-cpu
+faiss-cpu==1.7.3
+tiktoken
+openai
+
 
