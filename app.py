@@ -8,6 +8,7 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.callbacks import get_openai_callback
 import pickle
 import os
+from streamlit_chat import message
 from dotenv import load_dotenv
 from raw_strings import *
 
@@ -105,7 +106,7 @@ def main():
     st.sidebar.title("Hello ")
     st.sidebar.write("This is your personal leasing agent LeasingGPT")
     st.sidebar.write("I can help you find the best apartment for you")
-    st.sidebar.write("Made by Shreemit0")
+    st.sidebar.write("Made by Shreemit")
 
 if __name__ == "__main__":
     main()

@@ -5,3 +5,6 @@ streamlit==1.19.0
 torch==1.13.1
 transformers
 python-dotenv==1.0.0
+hugchat
+streamlit-chat
+streamlit-extras
