@@ -5,15 +5,30 @@ from langchain.vectorstores import FAISS
 from langchain.llms import OpenAI
 from langchain import PromptTemplate, HuggingFaceHub, LLMChain
 from langchain.chains.question_answering import load_qa_chain
+from langchain.chains import RetrievalQA
 from langchain.callbacks import get_openai_callback
+from langchain.chains.conversation.memory import ConversationBufferWindowMemory
+from langchain.agents import initialize_agent
+from langchain.agents import Tool
 import pickle
 import os
 from streamlit_chat import message
 from dotenv import load_dotenv
 from raw_strings import *
+import openai
 
 st.set_page_config(page_title="🏡 LeaseGPT", page_icon=":shark:")
 
+def get_listings_tool(retriever):
+    tool_desc = '''Use this tool to answer user questions using Apartment listings from Craigslist. If the user asks a question that is not in the listings, the tool will use OpenAI to generate a response.
+    This tool can also be used for follow up quesitons from the user. 
+    '''
+    tool = Tool(
+        func=retriever,
+        description=tool_desc,
+        name="Lease Listings Tool",   
+    )
+    return tool
 
 def main():
     os.environ["OPENAI_API_KEY"] = ""
@@ -90,28 +105,59 @@ def main():
             query = st.text_input("Ask your question")
             
             if query:
-                print("Query", VectorStore, query)
                 docs = VectorStore.similarity_search(query, k=3)
-                print("Docs", docs)
-                davinci = OpenAI(model_name="text-davinci-003")
-                chain = load_qa_chain(llm=davinci, chain_type="stuff")
+                st.write("Docs", docs)
+                llm = OpenAI(model_name="gpt-3.5-turbo")
+                retriever = RetrievalQA.from_chain_type(
+                    llm=llm,
+                    chain_type="stuff",
+                    retriver=VectorStore.as_retriever()
+                )
+
+                tools = [get_listings_tool(retriever=retriever)]
+                memory = ConversationBufferWindowMemory(
+                    memory_key='chat_history',
+                    k=3,
+                    return_messages=True
+                )
+
+                conversational_agent = initialize_agent(
+                    agent='chat-conversational-react-description',
+                    tools=tools,
+                    llm=llm,
+                    verbose=True,
+                    max_iterations=2,
+                    early_stopping_method='generate',
+                    memory=memory
+                ) 
+
+                st.write("Agent", conversational_agent.agent.llm_chain.prompt)
+                print("agent", conversational_agent.agent.llm_chain.prompt)
+
+
+
                 prompt.format(question=query)
                 question = prompt.format(question=query)
                 print("Question", question)
                 # st.write("Prompt", question)
                 # st.write("Docs", docs)
                 with get_openai_callback() as callback:
-                    response = chain.run(input_documents=docs, question=question)
+                    # response = chain.run(input_documents=docs, question=question)
                     print("Response", response)
                     # st.write(chain)
                     st.write("Cost for query", callback.total_cost)
                     
                     st.write(response)
                 print("Response", response)
+        
+        except openai.error.AuthenticationError as e:
+            st.write("Please enter a valid OpenAI API Key")
+            st.write(e)
 
         except:
             if os.environ["OPENAI_API_KEY"] is None:
-                st.write("Please enter a valid OpenAI API Key")
+                st.write("Please enter an OpenAI API Key")
+            # if e == "No API key found":
 
     st.sidebar.title("Hello")
     st.sidebar.write("This is your personal leasing agent LeasingGPT")
@@ -120,3 +166,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
