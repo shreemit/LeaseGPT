@@ -9,6 +9,7 @@ from langchain.chains import RetrievalQA
 from langchain.callbacks import get_openai_callback
 from langchain.chains.conversation.memory import ConversationBufferWindowMemory
 from langchain.agents import initialize_agent
+from langchain.chat_models import ChatOpenAI
 from langchain.agents import Tool
 import pickle
 import os
@@ -34,6 +35,8 @@ def main():
     os.environ["OPENAI_API_KEY"] = ""
     st.title("🚪🏡 LeaseGPT")
     st.write("Your AI Leasing Assistant")
+
+    print("Key", os.environ["OPENAI_API_KEY"])
     
     selection = st.selectbox(
         "Choose a city", ["Seattle", "LA", "San Francisco", "New York City"]
@@ -89,14 +92,17 @@ def main():
         Answer:
         '''
         prompt = PromptTemplate(template=template, input_variables=["question"])
+
+
         # print("Prompt", prompt)
         try:
+            embeddings = OpenAIEmbeddings()
             if os.path.exists(f"{store_name}.pkl"):
                 with open(f"{store_name}.pkl", "rb") as f:
                     VectorStore = pickle.load(f)
                     st.write("Embeddings Loaded from the Disk")
             else:
-                embeddings = OpenAIEmbeddings()
+                
                 VectorStore = FAISS.from_texts(chunks, embedding=embeddings)
                 with open(f"{store_name}.pkl", "wb") as f:
                     pickle.dump(VectorStore, f)
@@ -131,7 +137,18 @@ def main():
                     memory=memory
                 ) 
 
-                st.write("Agent", conversational_agent.agent.llm_chain.prompt)
+                conversational_prompt = conversational_agent.agent.create_prompt(
+                    system_message = template,
+                    tools=tools,
+                )
+
+                st.write("Before", conversational_agent.agent.llm_chain.prompt)
+
+                conversational_agent.agent.llm_chain.prompt = conversational_prompt
+
+                st.write("After", conversational_agent.agent.llm_chain.prompt)
+
+        
                 print("agent", conversational_agent.agent.llm_chain.prompt)
 
 
@@ -143,17 +160,15 @@ def main():
                 # st.write("Docs", docs)
                 with get_openai_callback() as callback:
                     # response = chain.run(input_documents=docs, question=question)
-                    print("Response", response)
+                    # print("Response", response)
                     # st.write(chain)
                     st.write("Cost for query", callback.total_cost)
                     
-                    st.write(response)
-                print("Response", response)
-        
+                #     st.write(response)
+                # print("Response", response) 
         except openai.error.AuthenticationError as e:
+            # print("Error", e)
             st.write("Please enter a valid OpenAI API Key")
-            st.write(e)
-
         except:
             if os.environ["OPENAI_API_KEY"] is None:
                 st.write("Please enter an OpenAI API Key")
