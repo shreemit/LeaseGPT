@@ -31,7 +31,7 @@ def get_listings_tool(retriever):
 def main():
     api_key = ""
     if api_key:
-        os.environ["OPENAI_API_KEY"] = ""
+        os.environ["OPENAI_API_KEY"] = api_key
 
     load_dotenv()
 
@@ -145,7 +145,8 @@ def main():
                 # response = chain.run(input_documents=docs, question=question)
                 # print("Response", response)
                 # st.write(chain)
-                print(conversational_agent("Give a few houses near UW")['output'])
+                op = conversational_agent("Give a few houses near UW")['output']
+                print("Output", op)
                 print("__________________________________")
                 print("__________________________________")
                 print("__________________________________")
