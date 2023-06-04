@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 from raw_strings import *
 import openai
 
-st.set_page_config(page_title="🏡 LeaseGPT", page_icon=":shark:")
+st.set_page_config(page_title="🏡 LeaseGPT", page_icon=":door:")
 
 def get_listings_tool(retriever):
     tool_desc = '''Use this tool to answer user questions using Apartment listings from Craigslist. If the user asks a question that is not in the listings, the tool will use OpenAI to generate a response.
