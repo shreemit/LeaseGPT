@@ -4,22 +4,39 @@ from streamlit_chat import message
 from streamlit_extras.colored_header import colored_header
 from streamlit_extras.add_vertical_space import add_vertical_space
 from hugchat import hugchat
+from llmTest import get_listings_tool
+from dotenv import load_dotenv
+import os
+from raw_strings import *
 
-st.set_page_config(page_title="HugChat - An LLM-powered Streamlit app")
+st.set_page_config(page_title="🏡 LeaseGPT", page_icon=":door:")
 # st.session_state.input = ""
 
 # Sidebar contents
 with st.sidebar:
-    st.title('🤗💬 HugChat App')
     st.markdown('''
-    ## About
-    This app is an LLM-powered chatbot
+    # Hello 👋
+    ### This is your personal leasing agent LeaseGPT
+    ### I can help you find the best apartment for you
     ''')
-    add_vertical_space(32)
+
+    add_vertical_space(3)
+    selection = st.selectbox(
+        "Choose your city", ["Seattle", "LA", "San Francisco", "New York City"]
+    )
+    api_key = st.text_input("Please enter your OpenAI key")
+    if api_key:
+        os.environ["OPENAI_API_KEY"] = api_key
+
+    load_dotenv()
+    add_vertical_space(15)
+    st.markdown('Made by Shreemit [Github](https://github.com/shreemit/LeaseGPT)')
+
+
 
 # Generate empty lists for generated and past.
 if 'generated' not in st.session_state:
-    st.session_state['generated'] = ["I'm HugChat, How may I help you?"]
+    st.session_state['generated'] = ["I'm LeaseGPT, How may I help you?"]
 ## past stores User's questions
 if 'past' not in st.session_state:
     st.session_state['past'] = ['Hi!']
@@ -27,6 +44,9 @@ if 'past' not in st.session_state:
 if 'something' not in st.session_state:
     st.session_state.something = ''
 
+
+st.title("🚪🏡 LeaseGPT")
+st.write("Your AI Leasing Assistant")
 colored_header(label='', description='', color_name='blue-30')
 response_container = st.container()
 input_container = st.container()

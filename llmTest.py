@@ -86,16 +86,11 @@ def main():
         query = "Houses near UW"
         
         if query:
-            docs = VectorStore.similarity_search(query, k=3)
-            
-
             llm=ChatOpenAI(
                 openai_api_key=api_key,
                 temperature=0,
                 model_name='gpt-3.5-turbo'
             )
-
-            from langchain.chains import RetrievalQA
 
             retriever = RetrievalQA.from_chain_type(
                 llm=llm,
@@ -124,8 +119,6 @@ def main():
                 system_message = template,
                 tools=tools,
             )
-
-
 
             conversational_agent.agent.llm_chain.prompt = conversational_prompt
 
