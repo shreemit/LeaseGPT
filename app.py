@@ -1,4 +1,15 @@
+import time
 import streamlit as st
+from streamlit_chat import message
+from streamlit_extras.colored_header import colored_header
+from streamlit_extras.add_vertical_space import add_vertical_space
+from hugchat import hugchat
+from llmTest import get_listings_tool
+from dotenv import load_dotenv
+import os
+from raw_strings import *
+import pickle
+
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
@@ -12,14 +23,10 @@ from langchain.agents import initialize_agent
 from langchain.chat_models import ChatOpenAI
 from langchain.agents import Tool
 from langchain.chains import RetrievalQA
-import pickle
-import os
-from streamlit_chat import message
-from dotenv import load_dotenv
-from raw_strings import *
 import openai
 
 st.set_page_config(page_title="🏡 LeaseGPT", page_icon=":door:")
+# st.session_state.input = ""
 
 
 def get_listings_tool(retriever):
@@ -71,17 +78,14 @@ def get_set_vector_store(chunks, selection):
 
 
 def setup_leasing_agent(vector_store, api_key):
-    # Template for the chatbot
     template = """I want you to act to act like a leasing agent for me. Giving me the best options based on what you read below. 
         You can give me something which matches my criteria or something which is close to it. Always list the names of the listings and any other details. If you have details on the rent always list that as well.
         """
-    
+
     llm = ChatOpenAI(openai_api_key=api_key, temperature=0, model_name="gpt-3.5-turbo")
 
     retriever = RetrievalQA.from_chain_type(
-        llm=llm, 
-        chain_type="stuff", 
-        retriever=vector_store.as_retriever()
+        llm=llm, chain_type="stuff", retriever=vector_store.as_retriever()
     )
 
     tools = [get_listings_tool(retriever=retriever)]
@@ -105,72 +109,94 @@ def setup_leasing_agent(vector_store, api_key):
     )
 
     conversational_agent.agent.llm_chain.prompt = conversational_prompt
-    print('Prompt', conversational_prompt)
+    print("Prompt", conversational_prompt)
     return conversational_agent
 
 
+## Function for taking user prompt as input followed by producing AI generated responses
+def generate_response(conversational_agent, user_input):
+    response = conversational_agent.run(user_input)
+    return response
+
+
+def clear_text():
+    st.session_state.something = st.session_state.widget
+    st.session_state.widget = ""
+
+
 def main():
-    os.environ["OPENAI_API_KEY"] = ""
+    with st.sidebar:
+        st.markdown(
+            """
+        # Hello 👋
+        ### This is your personal leasing agent LeaseGPT
+        ### I can help you find the best apartment for you
+        """
+        )
+
+        add_vertical_space(3)
+        selection = st.selectbox(
+            "Choose your city", ["Seattle", "LA", "San Francisco", "New York City"]
+        )
+        api_key = st.text_input("Please enter your OpenAI key")
+        if api_key:
+            os.environ["OPENAI_API_KEY"] = api_key
+
+        load_dotenv()
+        add_vertical_space(15)
+        st.markdown("Made by Shreemit [Github](https://github.com/shreemit/LeaseGPT)")
+
+    # Generate empty lists for generated and past.
+    if "generated" not in st.session_state:
+        st.session_state["generated"] = ["I'm LeaseGPT, How may I help you?"]
+    if "past" not in st.session_state:
+        st.session_state["past"] = ["Hi!"]
+    if "something" not in st.session_state:
+        st.session_state.something = ""
+
     st.title("🚪🏡 LeaseGPT")
     st.write("Your AI Leasing Assistant")
+    colored_header(label="", description="", color_name="blue-30")
+    response_container = st.container()
+    input_container = st.container()
+    colored_header(label="", description="", color_name="blue-40")
 
-    print("Key", os.environ["OPENAI_API_KEY"])
+    ## Applying the user input box
+    with input_container:
+        # user_input = st.session_state.widget
+        user_input = st.text_input("User: ", key="widget")
+        print("User Input 1", user_input)
 
-    selection = st.selectbox(
-        "Choose a city", ["Seattle", "LA", "San Francisco", "New York City"]
-    )
-    if selection == "Seattle":
-        st.write("You selected Seattle.")
-    elif selection == "LA":
-        st.write("You selected LA.")
-    elif selection == "San Francisco":
-        st.write("You selected San Francisco.")
-    elif selection == "New York City":
-        st.write("You selected New York City.")
-    else:
-        st.write("You haven't selected anything yet.")
-
-    api_key = st.text_input("Please enter your OpenAI key")
-    if api_key:
-        os.environ["OPENAI_API_KEY"] = api_key
-
-    load_dotenv()
-
-    if os.environ["OPENAI_API_KEY"] is not None:
+    if os.environ["OPENAI_API_KEY"] != "":
         print("OPEN AI Key", os.environ["OPENAI_API_KEY"])
-
         chunks = get_text_chunks(selection)
 
-        # print("Prompt", prompt)
-        try:
-            with st.spinner("Loading OpenAI Model"):
+    with response_container:
+        if user_input:
+            try:
                 vectore_store = get_set_vector_store(chunks, selection)
-            query = st.text_input("Ask your question")
-
-            if query:
-                # docs = vectore_store.similarity_search(query, k=3)
                 leasing_gpt = setup_leasing_agent(vectore_store, api_key)
-                with get_openai_callback() as callback:
-                    with st.spinner("Loading Answer"):
-                        print("Query", query)
-                        st.write(leasing_gpt.run(query))
-                    # st.write(conversational_agent("Give a few houses near UW"))
-                    # print("Output", op)
-                    # st.write(op)
+                # with get_openai_callback() as callback:
+                print("User Input", user_input)
+                response = generate_response(leasing_gpt, user_input)
+                st.session_state.past.append(user_input)
+                st.session_state.generated.append(response)
 
-        except openai.error.AuthenticationError as e:
-            # print("Error", e)
-            st.write("Please enter a valid OpenAI API Key")
-        except:
-            if os.environ["OPENAI_API_KEY"] is None:
-                st.write("Please enter an OpenAI API Key")
-            # if e == "No API key found":
+            except openai.error.AuthenticationError as e:
+                # print("Error", e)
+                st.write("Please enter a valid OpenAI API Key")
+            except:
+                if os.environ["OPENAI_API_KEY"] is None:
+                    st.write("Please enter an OpenAI API Key")
 
-    st.sidebar.title("Hello")
-    st.sidebar.write("This is your personal leasing agent LeasingGPT")
-    st.sidebar.write("I can help you find the best apartment for you")
-    st.sidebar.write("Made by Shreemit https://github.com/shreemit")
+        if st.session_state["generated"]:
+            for i in range(len(st.session_state["generated"])):
+                message(st.session_state["past"][i], is_user=True, key=str(i) + "_user")
+                message(st.session_state["generated"][i], key=str(i))
+
 
 
 if __name__ == "__main__":
     main()
+
+# Sidebar contents
