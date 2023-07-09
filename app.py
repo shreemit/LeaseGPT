@@ -79,7 +79,7 @@ def get_set_vector_store(chunks, selection):
 
 def setup_leasing_agent(vector_store, api_key):
     template = """I want you to act to act like a leasing agent for me. Giving me the best options based on what you read below. 
-        You can give me something which matches my criteria or something which is close to it. Always list the names of the listings and any other details. If you have details on the rent always list that as well.
+        You can give me something which matches my criteria or something which is close to it. Always list the names of the listings and any other details like price. If you have details on the rent always list that as well.
         """
 
     llm = ChatOpenAI(openai_api_key=api_key, temperature=0, model_name="gpt-3.5-turbo")
