@@ -3,7 +3,7 @@ import streamlit as st
 from streamlit_chat import message
 from streamlit_extras.colored_header import colored_header
 from streamlit_extras.add_vertical_space import add_vertical_space
-from hugchat import hugchat
+# from hugchat import hughat
 from llmTest import get_listings_tool
 from dotenv import load_dotenv
 import os
@@ -11,7 +11,8 @@ from raw_strings import *
 import pickle
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings.openai import OpenAIEmbeddings
+# from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.llms import OpenAI
 from langchain import PromptTemplate, HuggingFaceHub, LLMChain
@@ -159,7 +160,7 @@ def main():
     colored_header(label="", description="", color_name="blue-30")
     response_container = st.container()
     input_container = st.container()
-    colored_header(label="", description="", color_name="blue-40")
+    colored_header(label="", description="", color_name= "blue-40")
 
     ## Applying the user input box
     with input_container:
@@ -182,16 +183,20 @@ def main():
                 st.session_state.past.append(user_input)
                 st.session_state.generated.append(response)
 
-            except openai.error.AuthenticationError as e:
-                # print("Error", e)
-                st.write("Please enter a valid OpenAI API Key")
+            # except openai.error.AuthenticationError as e:
+            #     # print("Error", e)
+            #     st.write("Please enter a valid OpenAI API Key")
             except:
                 if os.environ["OPENAI_API_KEY"] is None:
                     st.write("Please enter an OpenAI API Key")
 
+       # Check if there are any generated messages stored in the Streamlit session state
         if st.session_state["generated"]:
+            # Loop through each generated message
             for i in range(len(st.session_state["generated"])):
+                # Display the user message in the chat interface
                 message(st.session_state["past"][i], is_user=True, key=str(i) + "_user")
+                # Display the generated message in the chat interface
                 message(st.session_state["generated"][i], key=str(i))
 
 
