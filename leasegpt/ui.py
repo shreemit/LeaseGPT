@@ -90,9 +90,11 @@ def render_sidebar(api_key_present: bool):
 
 def render_empty_state():
     st.caption("Describe budget, neighborhood, or amenities — or try:")
+    chosen = None
     for i, example in enumerate(EXAMPLE_QUERIES):
         if st.button(example, key=f"example_{i}"):
-            st.session_state.pending_query = example
+            chosen = example
+    return chosen
 
 
 def render_listings_tab():

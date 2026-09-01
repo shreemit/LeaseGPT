@@ -20,11 +20,13 @@ from leasegpt.ui import (
 st.set_page_config(page_title="LeaseGPT", page_icon=":door:", layout="centered")
 
 
-def _resolve_api_key(sidebar_key: str) -> str:
-    key = sidebar_key or os.environ.get("GROQ_API_KEY", "") or ""
-    if key:
-        os.environ["GROQ_API_KEY"] = key
-    return key
+def _resolve_api_key(sidebar_key: str, env_key: str) -> str:
+    """Prefer a per-session sidebar key; never write it into process env.
+
+    Hosted Streamlit shares one process across visitors, so copying a pasted
+    key into os.environ would leak it to later sessions.
+    """
+    return (sidebar_key or env_key or "").strip()
 
 
 def _get_cached_rag(api_key: str, selection: str):
@@ -62,9 +64,9 @@ def main():
     _init_state()
     apply_styles()
 
-    env_key = os.environ.get("GROQ_API_KEY", "") or ""
+    env_key = (os.environ.get("GROQ_API_KEY") or "").strip()
     sidebar = render_sidebar(api_key_present=bool(env_key))
-    api_key = _resolve_api_key(sidebar["sidebar_key"])
+    api_key = _resolve_api_key(sidebar["sidebar_key"], env_key)
 
     render_header()
 
@@ -93,13 +95,15 @@ def main():
 
     chat_tab, sources_tab, listings_tab = st.tabs(["Chat", "Sources", "Listings"])
     with chat_tab:
+        example = None
         if not messages:
-            render_empty_state()
+            example = render_empty_state()
         else:
             render_chat(messages)
         composed = render_composer()
-        if composed:
-            st.session_state.pending_query = composed
+        queued = example or composed
+        if queued:
+            st.session_state.pending_query = queued
             st.experimental_rerun()
     with sources_tab:
         render_sources_panel(latest_sources)
