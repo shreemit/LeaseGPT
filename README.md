@@ -1,43 +1,47 @@
 # LeaseGPT
 
-LeaseGPT is a personal leasing assistant built using Langchain, OpenAI, and FAISS vector search. It is designed to help users find the best apartment options based on their preferences.
+LeaseGPT is a RAG-based apartment leasing assistant. It retrieves from a small set of Seattle listing texts (FAISS + OpenAI embeddings) and answers as a conversational leasing agent in a Streamlit chat UI.
 
-## Structure
+## Architecture
 
-The project is structured as follows:
+```
+listings (leasegpt/listings.py)
+        → retriever (chunk + embed + FAISS)
+        → generator (RetrievalQA tool + conversational agent)
+        → Streamlit UI (app.py)
+```
 
-- `app.py`: This is the main application file. It sets up the leasing agent, generates responses based on user input, and handles the Streamlit interface.
-- `chatPOC.py`: This file contains a proof of concept for the chat interface using Streamlit.
-- `llama_POC.py`: This file contains a proof of concept for using the Llama language model.
-- `llmTest.py`: This file contains tests for the language model and functions for getting listings.
-- `raw_strings.py`: This file contains raw string data.
-- `scrapeCraigslist.py`: This file is responsible for scraping data from Craigslist.
-- `requirements.txt`: This file lists all Python dependencies.
+- **Retriever** (`leasegpt/retriever.py`): splits listing documents, builds or loads a pickled FAISS store (`craigslist_vector_store.pkl`), and exposes similarity search via LangChain.
+- **Generator** (`leasegpt/generator.py`): wraps retrieval in a LangChain tool and a `chat-conversational-react-description` agent (`gpt-3.5-turbo`).
+- **UI** (`app.py`): Streamlit sidebar (city + OpenAI API key) and chat transcript. City selection is present in the UI; listings are still the hardcoded Seattle sample set.
+- **Scraper** (`leasegpt/scraper.py`): standalone Craigslist Selenium script. It is not wired into retrieval yet.
 
 ## Setup
 
-To set up the project, you need to install the required dependencies listed in the `requirements.txt` file. You can do this by running:
+Python 3.10 is required (`faiss-cpu==1.7.3` has no wheels for 3.13).
+
+1. Create a virtual environment and install dependencies:
 
 ```sh
+python3.10 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-
 ```
 
-## Usage
+2. Start the app:
 
-To start the application, run:
 ```sh
 streamlit run app.py
 ```
 
-This will start the Streamlit server and you can interact with the application in your web browser.
-App will be hosted soon... 
+3. In the sidebar, paste an OpenAI API key. You can also set `OPENAI_API_KEY` in a local `.env` file (not committed).
 
-Contributing
-Contributions are welcome. Please submit a pull request or open an issue if you have any improvements or bug fixes.
+Firefox/geckodriver is only required if you run `leasegpt/scraper.py` yourself.
 
-License
-This project is licensed under the terms of the MIT license. See the LICENSE file for the full license text.
+## Roadmap
 
+Retrieval evaluation is in progress. The next phase is an evaluation layer over the retriever (grounded listing queries, ranking metrics, and regression checks) before changing generation or scraping.
 
+## License
 
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for the full text.
