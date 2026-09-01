@@ -1,22 +1,21 @@
 [project]
 name = "leasegpt"
 version = "0.1.0"
-description = "RAG-based apartment leasing assistant using LangChain, OpenAI, and FAISS."
+description = "RAG-based apartment leasing assistant using LangChain, Groq, FastEmbed, and FAISS."
 readme = "README.md"
 requires-python = ">=3.10,<3.11"
 dependencies = [
     "beautifulsoup4==4.11.2",
     "langchain==0.0.181",
-    "langchain-openai==0.1.25",
     "selenium==4.9.1",
     "streamlit==1.19.0",
     "python-dotenv==1.0.0",
     "streamlit-chat==0.1.1",
     "streamlit-extras==0.1.5",
     "faiss-cpu==1.7.3",
-    "tiktoken==0.14.0",
-    "openai==1.109.1",
     "altair==4.2.2",
+    "fastembed==0.4.2",
+    "groq==0.31.1",
 ]
 
 [tool.uv]

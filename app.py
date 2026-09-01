@@ -1,112 +1,114 @@
 import os
 
-import openai
 import streamlit as st
 from dotenv import load_dotenv
-from streamlit_chat import message
-from streamlit_extras.colored_header import colored_header
+from groq import APIError, AuthenticationError
 
 from leasegpt.generator import generate_response, setup_leasing_agent
-from leasegpt.retriever import get_set_vector_store, get_text_chunks
+from leasegpt.retriever import get_set_vector_store, get_text_chunks, retrieve_sources
+from leasegpt.ui import (
+    apply_styles,
+    render_chat,
+    render_composer,
+    render_empty_state,
+    render_header,
+    render_listings_tab,
+    render_sidebar,
+    render_sources_panel,
+)
+
+st.set_page_config(page_title="LeaseGPT", page_icon=":door:", layout="centered")
 
 
-def add_vertical_space(num_lines: int = 1):
-    for _ in range(num_lines):
-        st.write("")
+def _resolve_api_key(sidebar_key: str, env_key: str) -> str:
+    """Prefer a per-session sidebar key; never write it into process env.
+
+    Hosted Streamlit shares one process across visitors, so copying a pasted
+    key into os.environ would leak it to later sessions.
+    """
+    return (sidebar_key or env_key or "").strip()
 
 
-st.set_page_config(page_title="🏡 LeaseGPT", page_icon=":door:")
-
-
-def clear_text():
-    st.session_state.something = st.session_state.widget
-    st.session_state.widget = ""
-
-
-def _resolve_api_key(sidebar_key: str) -> str:
-    if sidebar_key:
-        os.environ["OPENAI_API_KEY"] = sidebar_key
-        return sidebar_key
-    return os.environ.get("OPENAI_API_KEY", "") or ""
-
-
-def _get_cached_agent(api_key: str, selection: str):
-    if (
-        st.session_state.get("leasing_agent") is None
-        or st.session_state.get("agent_api_key") != api_key
-    ):
+def _get_cached_rag(api_key: str, selection: str):
+    if st.session_state.get("vector_store") is None:
         chunks = get_text_chunks(selection)
-        vector_store = get_set_vector_store(chunks, selection)
-        st.session_state.leasing_agent = setup_leasing_agent(vector_store, api_key)
+        st.session_state.vector_store = get_set_vector_store(chunks, selection)
+    key_changed = st.session_state.get("agent_api_key") != api_key
+    if api_key and (st.session_state.get("leasing_agent") is None or key_changed):
+        st.session_state.leasing_agent = setup_leasing_agent(
+            st.session_state.vector_store, api_key
+        )
         st.session_state.agent_api_key = api_key
-    return st.session_state.leasing_agent
+    return st.session_state.vector_store, st.session_state.get("leasing_agent")
+
+
+def _init_state():
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+    if "pending_query" not in st.session_state:
+        st.session_state.pending_query = None
+
+
+def _run_turn(query: str, api_key: str):
+    vector_store, agent = _get_cached_rag(api_key, "Seattle")
+    sources = retrieve_sources(vector_store, query)
+    answer = generate_response(agent, query)
+    st.session_state.messages.append({"role": "user", "content": query, "sources": []})
+    st.session_state.messages.append(
+        {"role": "assistant", "content": answer, "sources": sources}
+    )
 
 
 def main():
     load_dotenv()
+    _init_state()
+    apply_styles()
 
-    with st.sidebar:
-        st.markdown(
-            """
-        # Hello 👋
-        ### This is your personal leasing agent LeaseGPT
-        ### I can help you find the best apartment for you
-        """
-        )
+    env_key = (os.environ.get("GROQ_API_KEY") or "").strip()
+    sidebar = render_sidebar(api_key_present=bool(env_key))
+    api_key = _resolve_api_key(sidebar["sidebar_key"], env_key)
 
-        add_vertical_space(3)
-        selection = st.selectbox(
-            "Choose your city",
-            ["Seattle", "LA", "San Francisco", "New York City"],
-            disabled=True,
-        )
-        st.caption(
-            "Listings are a hardcoded Seattle sample. City filtering is not wired yet."
-        )
-        sidebar_key = st.text_input("Please enter your OpenAI key", type="password")
-        api_key = _resolve_api_key(sidebar_key)
+    render_header()
 
-        add_vertical_space(15)
-        st.markdown("Made by Shreemit [Github](https://github.com/shreemit/LeaseGPT)")
-
-    if "generated" not in st.session_state:
-        st.session_state["generated"] = ["I'm LeaseGPT, How may I help you?"]
-    if "past" not in st.session_state:
-        st.session_state["past"] = ["Hi!"]
-    if "something" not in st.session_state:
-        st.session_state.something = ""
-
-    st.title("🚪🏡 LeaseGPT")
-    st.write("Your AI Leasing Assistant")
-    colored_header(label="", description="", color_name="blue-30")
-    response_container = st.container()
-    input_container = st.container()
-    colored_header(label="", description="", color_name="blue-40")
-
-    with input_container:
-        user_input = st.text_input("User: ", key="widget")
-        print("User Input 1", user_input)
-
+    query = st.session_state.pop("pending_query", None)
     if not api_key:
-        st.info("Enter an OpenAI API key in the sidebar to chat.")
+        st.info("Enter a Groq API key in the sidebar to chat, or set GROQ_API_KEY.")
 
-    with response_container:
-        if user_input and api_key:
+    if query:
+        if not api_key:
+            st.warning("Add an API key before running a query.")
+        else:
             try:
-                leasing_gpt = _get_cached_agent(api_key, selection)
-                print("User Input", user_input)
-                response = generate_response(leasing_gpt, user_input)
-                st.session_state.past.append(user_input)
-                st.session_state.generated.append(response)
-            except (KeyError, openai.AuthenticationError, openai.APIError) as exc:
+                with st.spinner("Searching listings and drafting an answer…"):
+                    _run_turn(query, api_key)
+            except (KeyError, AuthenticationError, APIError) as exc:
                 st.error(str(exc))
             except Exception as exc:
                 st.error(str(exc))
 
-        if st.session_state["generated"]:
-            for i in range(len(st.session_state["generated"])):
-                message(st.session_state["past"][i], is_user=True, key=str(i) + "_user")
-                message(st.session_state["generated"][i], key=str(i))
+    messages = st.session_state.messages
+    latest_sources = []
+    for msg in reversed(messages):
+        if msg["role"] == "assistant" and msg.get("sources"):
+            latest_sources = msg["sources"]
+            break
+
+    chat_tab, sources_tab, listings_tab = st.tabs(["Chat", "Sources", "Listings"])
+    with chat_tab:
+        example = None
+        if not messages:
+            example = render_empty_state()
+        else:
+            render_chat(messages)
+        composed = render_composer()
+        queued = example or composed
+        if queued:
+            st.session_state.pending_query = queued
+            st.experimental_rerun()
+    with sources_tab:
+        render_sources_panel(latest_sources)
+    with listings_tab:
+        render_listings_tab()
 
 
 if __name__ == "__main__":

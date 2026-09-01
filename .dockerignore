@@ -1,0 +1,13 @@
+.venv
+.git
+__pycache__
+*.pyc
+.env
+*.pkl
+*.faiss
+.idea
+.vscode
+.DS_Store
+docs/screenshots
+*.md
+!README.md
