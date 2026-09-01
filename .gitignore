@@ -1,2 +1,10 @@
-
+__pycache__/
+*.pyc
+*.log
+.env
+.idea/
+.vscode/
+.venv/
+.DS_Store
+*.faiss
 *.pkl
