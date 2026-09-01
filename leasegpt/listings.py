@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+import re
+
 doc1 = '''
 Title: $2,650 / 3br - 1000ft2 - 3 Bedroom Loft Available Now! Great Location! U District (U-District)
 Cost: 2650 
@@ -73,3 +76,81 @@ Check out our website to see Matterport 3D Tour and floorplans!
 https://pacific-apartments.com/property/unit-408/
 Call show contact info or show contact info to make this your next home!
 '''
+
+
+@dataclass(frozen=True)
+class Listing:
+    title: str
+    cost: int
+    neighborhood: str
+    bedrooms_label: str
+    raw: str
+
+
+def _parse_title(raw: str) -> str:
+    for line in raw.splitlines():
+        if line.startswith("Title:"):
+            return line.split("Title:", 1)[1].strip()
+    return "Listing"
+
+
+def _parse_cost(raw: str) -> int:
+    for line in raw.splitlines():
+        if line.startswith("Cost:"):
+            return int(re.sub(r"[^\d]", "", line.split("Cost:", 1)[1]))
+    return 0
+
+
+def _parse_neighborhood(raw: str) -> str:
+    lowered = raw.lower()
+    if "ballard" in lowered or "fremont" in lowered or "wallingford" in lowered:
+        return "Ballard/Fremont/Wallingford"
+    return "U-District"
+
+
+SAMPLE_LISTINGS = [
+    Listing(
+        title=_parse_title(doc1),
+        cost=_parse_cost(doc1),
+        neighborhood=_parse_neighborhood(doc1),
+        bedrooms_label="3-bedroom sample",
+        raw=doc1,
+    ),
+    Listing(
+        title=_parse_title(doc2),
+        cost=_parse_cost(doc2),
+        neighborhood=_parse_neighborhood(doc2),
+        bedrooms_label="3-bedroom sample",
+        raw=doc2,
+    ),
+    Listing(
+        title=_parse_title(doc3),
+        cost=_parse_cost(doc3),
+        neighborhood=_parse_neighborhood(doc3),
+        bedrooms_label="3-bedroom sample",
+        raw=doc3,
+    ),
+    Listing(
+        title=_parse_title(doc4),
+        cost=_parse_cost(doc4),
+        neighborhood=_parse_neighborhood(doc4),
+        bedrooms_label="3-bedroom sample",
+        raw=doc4,
+    ),
+]
+
+NEIGHBORHOODS = ["All"] + sorted({listing.neighborhood for listing in SAMPLE_LISTINGS})
+PRICE_MIN = min(listing.cost for listing in SAMPLE_LISTINGS)
+PRICE_MAX = max(listing.cost for listing in SAMPLE_LISTINGS)
+
+
+def filter_listings(price_min: int, price_max: int, neighborhood: str):
+    results = []
+    for listing in SAMPLE_LISTINGS:
+        if listing.cost < price_min or listing.cost > price_max:
+            continue
+        if neighborhood != "All" and listing.neighborhood != neighborhood:
+            continue
+        results.append(listing)
+    return results
+

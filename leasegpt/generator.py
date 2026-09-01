@@ -1,11 +1,12 @@
 from langchain.agents import Tool, initialize_agent
 from langchain.chains import RetrievalQA
 from langchain.chains.conversation.memory import ConversationBufferWindowMemory
-from langchain_openai import ChatOpenAI
+
+from leasegpt.groq_chat import GROQ_MODEL, ChatGroq
 
 
 def get_listings_tool(retriever):
-    tool_desc = """Use this tool to inform user about listings from context. Give the user 2 options based on their criterion. If the user asks a question that is not in the listings, the tool will use OpenAI to generate a response.
+    tool_desc = """Use this tool to inform user about listings from context. Give the user 2 options based on their criterion. If the user asks a question that is not in the listings, the tool will generate a response from retrieved listing text.
     This tool can also be used for follow up quesitons from the user. 
     """
     tool = Tool(
@@ -21,7 +22,7 @@ def setup_leasing_agent(vector_store, api_key):
         You can give me something which matches my criteria or something which is close to it. Always list the names of the listings and any other details like price. If you have details on the rent always list that as well.
         """
 
-    llm = ChatOpenAI(api_key=api_key, temperature=0, model="gpt-3.5-turbo")
+    llm = ChatGroq(groq_api_key=api_key, temperature=0, model=GROQ_MODEL)
 
     retriever = RetrievalQA.from_chain_type(
         llm=llm, chain_type="stuff", retriever=vector_store.as_retriever()

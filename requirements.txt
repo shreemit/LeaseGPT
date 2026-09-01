@@ -1,0 +1,11 @@
+beautifulsoup4==4.11.2
+langchain==0.0.181
+selenium==4.9.1
+streamlit==1.19.0
+python-dotenv==1.0.0
+streamlit-chat==0.1.1
+streamlit-extras==0.1.5
+faiss-cpu==1.7.3
+altair==4.2.2
+fastembed==0.4.2
+groq==0.31.1
