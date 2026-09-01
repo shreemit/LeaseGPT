@@ -18,20 +18,18 @@ listings (leasegpt/listings.py)
 
 ## Setup
 
-Python 3.10 is required (`faiss-cpu==1.7.3` has no wheels for 3.13).
+Python 3.10 is required (`faiss-cpu==1.7.3` has no wheels for 3.13). Install [uv](https://docs.astral.sh/uv/) if you do not already have it.
 
-1. Create a virtual environment and install dependencies:
+1. Sync the virtual environment from the lockfile:
 
 ```sh
-python3.10 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+uv sync
 ```
 
 2. Start the app:
 
 ```sh
-streamlit run app.py
+uv run streamlit run app.py
 ```
 
 3. In the sidebar, paste an OpenAI API key. You can also set `OPENAI_API_KEY` in a local `.env` file (not committed).

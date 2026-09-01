@@ -1,12 +1,17 @@
-import streamlit as st
-from streamlit_chat import message
-from streamlit_extras.colored_header import colored_header
-from streamlit_extras.add_vertical_space import add_vertical_space
-from dotenv import load_dotenv
 import os
 
-from leasegpt.retriever import get_text_chunks, get_set_vector_store
-from leasegpt.generator import setup_leasing_agent, generate_response
+import streamlit as st
+from dotenv import load_dotenv
+from streamlit_chat import message
+from streamlit_extras.colored_header import colored_header
+
+from leasegpt.generator import generate_response, setup_leasing_agent
+from leasegpt.retriever import get_set_vector_store, get_text_chunks
+
+
+def add_vertical_space(num_lines: int = 1):
+    for _ in range(num_lines):
+        st.write("")
 
 st.set_page_config(page_title="🏡 LeaseGPT", page_icon=":door:")
 # st.session_state.input = ""
