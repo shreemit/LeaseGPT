@@ -1,5 +1,6 @@
 import os
 
+import openai
 import streamlit as st
 from dotenv import load_dotenv
 from streamlit_chat import message
@@ -13,8 +14,8 @@ def add_vertical_space(num_lines: int = 1):
     for _ in range(num_lines):
         st.write("")
 
+
 st.set_page_config(page_title="🏡 LeaseGPT", page_icon=":door:")
-# st.session_state.input = ""
 
 
 def clear_text():
@@ -22,7 +23,28 @@ def clear_text():
     st.session_state.widget = ""
 
 
+def _resolve_api_key(sidebar_key: str) -> str:
+    if sidebar_key:
+        os.environ["OPENAI_API_KEY"] = sidebar_key
+        return sidebar_key
+    return os.environ.get("OPENAI_API_KEY", "") or ""
+
+
+def _get_cached_agent(api_key: str, selection: str):
+    if (
+        st.session_state.get("leasing_agent") is None
+        or st.session_state.get("agent_api_key") != api_key
+    ):
+        chunks = get_text_chunks(selection)
+        vector_store = get_set_vector_store(chunks, selection)
+        st.session_state.leasing_agent = setup_leasing_agent(vector_store, api_key)
+        st.session_state.agent_api_key = api_key
+    return st.session_state.leasing_agent
+
+
 def main():
+    load_dotenv()
+
     with st.sidebar:
         st.markdown(
             """
@@ -34,17 +56,19 @@ def main():
 
         add_vertical_space(3)
         selection = st.selectbox(
-            "Choose your city", ["Seattle", "LA", "San Francisco", "New York City"]
+            "Choose your city",
+            ["Seattle", "LA", "San Francisco", "New York City"],
+            disabled=True,
         )
-        api_key = st.text_input("Please enter your OpenAI key")
-        if api_key:
-            os.environ["OPENAI_API_KEY"] = api_key
+        st.caption(
+            "Listings are a hardcoded Seattle sample. City filtering is not wired yet."
+        )
+        sidebar_key = st.text_input("Please enter your OpenAI key", type="password")
+        api_key = _resolve_api_key(sidebar_key)
 
-        load_dotenv()
         add_vertical_space(15)
         st.markdown("Made by Shreemit [Github](https://github.com/shreemit/LeaseGPT)")
 
-    # Generate empty lists for generated and past.
     if "generated" not in st.session_state:
         st.session_state["generated"] = ["I'm LeaseGPT, How may I help you?"]
     if "past" not in st.session_state:
@@ -57,48 +81,33 @@ def main():
     colored_header(label="", description="", color_name="blue-30")
     response_container = st.container()
     input_container = st.container()
-    colored_header(label="", description="", color_name= "blue-40")
+    colored_header(label="", description="", color_name="blue-40")
 
-    ## Applying the user input box
     with input_container:
-        # user_input = st.session_state.widget
         user_input = st.text_input("User: ", key="widget")
         print("User Input 1", user_input)
 
-    if os.environ["OPENAI_API_KEY"] != "":
-        print("OPEN AI Key", os.environ["OPENAI_API_KEY"])
-        chunks = get_text_chunks(selection)
+    if not api_key:
+        st.info("Enter an OpenAI API key in the sidebar to chat.")
 
     with response_container:
-        if user_input:
+        if user_input and api_key:
             try:
-                vectore_store = get_set_vector_store(chunks, selection)
-                leasing_gpt = setup_leasing_agent(vectore_store, api_key)
-                # with get_openai_callback() as callback:
+                leasing_gpt = _get_cached_agent(api_key, selection)
                 print("User Input", user_input)
                 response = generate_response(leasing_gpt, user_input)
                 st.session_state.past.append(user_input)
                 st.session_state.generated.append(response)
+            except (KeyError, openai.AuthenticationError, openai.APIError) as exc:
+                st.error(str(exc))
+            except Exception as exc:
+                st.error(str(exc))
 
-            # except openai.error.AuthenticationError as e:
-            #     # print("Error", e)
-            #     st.write("Please enter a valid OpenAI API Key")
-            except:
-                if os.environ["OPENAI_API_KEY"] is None:
-                    st.write("Please enter an OpenAI API Key")
-
-       # Check if there are any generated messages stored in the Streamlit session state
         if st.session_state["generated"]:
-            # Loop through each generated message
             for i in range(len(st.session_state["generated"])):
-                # Display the user message in the chat interface
                 message(st.session_state["past"][i], is_user=True, key=str(i) + "_user")
-                # Display the generated message in the chat interface
                 message(st.session_state["generated"][i], key=str(i))
-
 
 
 if __name__ == "__main__":
     main()
-
-# Sidebar contents

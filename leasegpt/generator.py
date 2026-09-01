@@ -1,8 +1,7 @@
+from langchain.agents import Tool, initialize_agent
 from langchain.chains import RetrievalQA
 from langchain.chains.conversation.memory import ConversationBufferWindowMemory
-from langchain.agents import initialize_agent
-from langchain.chat_models import ChatOpenAI
-from langchain.agents import Tool
+from langchain_openai import ChatOpenAI
 
 
 def get_listings_tool(retriever):
@@ -22,7 +21,7 @@ def setup_leasing_agent(vector_store, api_key):
         You can give me something which matches my criteria or something which is close to it. Always list the names of the listings and any other details like price. If you have details on the rent always list that as well.
         """
 
-    llm = ChatOpenAI(openai_api_key=api_key, temperature=0, model_name="gpt-3.5-turbo")
+    llm = ChatOpenAI(api_key=api_key, temperature=0, model="gpt-3.5-turbo")
 
     retriever = RetrievalQA.from_chain_type(
         llm=llm, chain_type="stuff", retriever=vector_store.as_retriever()

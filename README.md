@@ -13,8 +13,8 @@ listings (leasegpt/listings.py)
 
 - **Retriever** (`leasegpt/retriever.py`): splits listing documents, builds or loads a pickled FAISS store (`craigslist_vector_store.pkl`), and exposes similarity search via LangChain.
 - **Generator** (`leasegpt/generator.py`): wraps retrieval in a LangChain tool and a `chat-conversational-react-description` agent (`gpt-3.5-turbo`).
-- **UI** (`app.py`): Streamlit sidebar (city + OpenAI API key) and chat transcript. City selection is present in the UI; listings are still the hardcoded Seattle sample set.
-- **Scraper** (`leasegpt/scraper.py`): standalone Craigslist Selenium script. It is not wired into retrieval yet.
+- **UI** (`app.py`): Streamlit sidebar (OpenAI API key) and chat transcript. The city selectbox is disabled until listings are filtered by city. The FAISS pickle on disk is a local demo cache only — do not share it.
+- **Scraper** (`leasegpt/scraper.py`): standalone Craigslist Selenium script. It is not imported by the app and is not wired into retrieval. Running it launches Firefox at import time.
 
 ## Setup
 

@@ -32,6 +32,7 @@ def get_text_chunks(selection: str):
 
 def get_set_vector_store(chunks, selection):
     embeddings = OpenAIEmbeddings()
+    # Local demo cache only — not portable or safe to share.
     store_name = "craigslist_vector_store"
     if os.path.exists(f"{store_name}.pkl"):
         with open(f"{store_name}.pkl", "rb") as f:
