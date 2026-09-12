@@ -47,6 +47,18 @@ class RedactListingTests(unittest.TestCase):
         self.assertEqual(merged[1]["price"], 2)
         self.assertEqual(added, 1)
 
+    def test_jsonl_roundtrip(self):
+        fetch = _load_fetch_module()
+        path = ROOT / "data" / "_test_roundtrip.jsonl"
+        records = [{"id": "a", "price": 1}, {"id": "b", "price": 2}]
+        try:
+            fetch.write_jsonl(path, records)
+            self.assertEqual(path.read_text(encoding="utf-8").count("\n"), 2)
+            self.assertEqual(fetch.read_jsonl(path), records)
+        finally:
+            if path.is_file():
+                path.unlink()
+
     def test_snapshot_maps_to_listings(self):
         from leasegpt.listings import SAMPLE_LISTINGS, SNAPSHOT_LABEL, filter_listings
 

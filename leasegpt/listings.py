@@ -3,7 +3,8 @@ from datetime import datetime
 from pathlib import Path
 import json
 
-SNAPSHOT_PATH = Path(__file__).resolve().parent.parent / "data" / "seattle_rentals.json"
+SNAPSHOT_PATH = Path(__file__).resolve().parent.parent / "data" / "seattle_rentals.jsonl"
+META_PATH = Path(__file__).resolve().parent.parent / "data" / "seattle_rentals.meta.json"
 
 ZIP_TO_NEIGHBORHOOD = {
     "98101": "Downtown",
@@ -47,13 +48,30 @@ class Listing:
     raw: str
 
 
+def _load_jsonl(path: Path) -> list:
+    records = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        item = json.loads(line)
+        if isinstance(item, dict):
+            records.append(item)
+    return records
+
+
 def _load_snapshot() -> dict:
     if not SNAPSHOT_PATH.is_file():
         raise FileNotFoundError(
             f"Missing listing snapshot at {SNAPSHOT_PATH}. "
             "Run: uv run python scripts/fetch_rentcast_listings.py"
         )
-    return json.loads(SNAPSHOT_PATH.read_text(encoding="utf-8"))
+    meta = {}
+    if META_PATH.is_file():
+        loaded = json.loads(META_PATH.read_text(encoding="utf-8"))
+        if isinstance(loaded, dict):
+            meta = loaded
+    return {**meta, "listings": _load_jsonl(SNAPSHOT_PATH)}
 
 
 def _snapshot_date(fetched_at: str) -> str:

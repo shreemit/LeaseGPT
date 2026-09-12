@@ -12,7 +12,9 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parent.parent
-OUTPUT = ROOT / "data" / "seattle_rentals.json"
+LISTINGS_PATH = ROOT / "data" / "seattle_rentals.jsonl"
+META_PATH = ROOT / "data" / "seattle_rentals.meta.json"
+LEGACY_JSON_PATH = ROOT / "data" / "seattle_rentals.json"
 ENDPOINT = "https://api.rentcast.io/v1/listings/rental/long-term"
 QUERY = {
     "city": "Seattle",
@@ -70,6 +72,33 @@ def _listing_id(record: dict) -> str:
     return str(record.get("id") or record.get("formattedAddress") or "")
 
 
+def read_jsonl(path: Path) -> list:
+    if not path.is_file():
+        return []
+    records = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        item = json.loads(line)
+        if isinstance(item, dict):
+            records.append(item)
+    return records
+
+
+def write_jsonl(path: Path, records: list) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    lines = [
+        json.dumps(item, separators=(",", ":"), ensure_ascii=False) for item in records
+    ]
+    path.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
+
+
+def write_meta(path: Path, meta: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
+
+
 def _parse_records(payload) -> list:
     if isinstance(payload, dict) and "listings" in payload:
         records = payload["listings"]
@@ -81,11 +110,13 @@ def _parse_records(payload) -> list:
 
 
 def _load_existing() -> list:
-    if not OUTPUT.is_file():
-        return []
-    data = json.loads(OUTPUT.read_text(encoding="utf-8"))
-    records = data.get("listings") or []
-    return [item for item in records if isinstance(item, dict)]
+    if LISTINGS_PATH.is_file():
+        return read_jsonl(LISTINGS_PATH)
+    if LEGACY_JSON_PATH.is_file():
+        data = json.loads(LEGACY_JSON_PATH.read_text(encoding="utf-8"))
+        records = data.get("listings") or []
+        return [item for item in records if isinstance(item, dict)]
+    return []
 
 
 def merge_listings(existing: list, incoming: list) -> tuple[list, int]:
@@ -154,19 +185,24 @@ def main() -> None:
     existing_ids = {_listing_id(item) for item in existing if _listing_id(item)}
     incoming, pages = fetch_additional(_api_key(), existing_ids, ADD_LISTINGS)
     listings, added = merge_listings(existing, incoming)
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    snapshot = {
-        "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "query": {
-            **QUERY,
-            "limit": PAGE_SIZE,
-            "added": ADD_LISTINGS,
+    LISTINGS_PATH.parent.mkdir(parents=True, exist_ok=True)
+    write_jsonl(LISTINGS_PATH, listings)
+    write_meta(
+        META_PATH,
+        {
+            "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "query": {
+                **QUERY,
+                "limit": PAGE_SIZE,
+                "added": ADD_LISTINGS,
+            },
+            "n_listings": len(listings),
         },
-        "listings": listings,
-    }
-    OUTPUT.write_text(json.dumps(snapshot, indent=2) + "\n", encoding="utf-8")
+    )
+    if LEGACY_JSON_PATH.is_file():
+        LEGACY_JSON_PATH.unlink()
     print(
-        f"Wrote {len(listings)} listings to {OUTPUT} "
+        f"Wrote {len(listings)} listings to {LISTINGS_PATH} "
         f"({len(existing)} kept, {added} added, {pages} API pages)"
     )
 

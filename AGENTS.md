@@ -1,6 +1,6 @@
 # LeaseGPT — agent notes
 
-RAG leasing demo: frozen Seattle RentCast snapshot (`data/seattle_rentals.json`) → chunk + FastEmbed + in-memory FAISS → LangChain conversational agent (Groq) → Streamlit tabs. Keep changes small. This is not live inventory or a production leasing platform. The app must not call RentCast.
+RAG leasing demo: frozen Seattle RentCast snapshot (`data/seattle_rentals.jsonl`) → chunk + FastEmbed + in-memory FAISS → LangChain conversational agent (Groq) → Streamlit tabs. Keep changes small. This is not live inventory or a production leasing platform. The app must not call RentCast.
 
 Recent PRs that define the current shape: [#1](https://github.com/shreemit/LeaseGPT/pull/1) (package + uv), [#2](https://github.com/shreemit/LeaseGPT/pull/2) (tabbed UI, FastEmbed, Groq, hosting files). Do not resurrect deleted POCs (`chatPOC.py`, `llama_POC.py`, `llmTest.py`) or route chat through OpenAI / `langchain-openai`.
 
@@ -25,8 +25,9 @@ There is no dedicated test runner package. Listing snapshot helpers can be check
 | Path | Role |
 |------|------|
 | `app.py` | Streamlit entry: session state, key resolution, RAG cache, tabs, chat turn |
-| `leasegpt/listings.py` | Loads `data/seattle_rentals.json` → `Listing` / `SAMPLE_LISTINGS` / `filter_listings` |
-| `data/seattle_rentals.json` | Frozen RentCast Active Seattle snapshot (`fetched_at` + redacted records) |
+| `leasegpt/listings.py` | Loads `data/seattle_rentals.jsonl` + `.meta.json` → `Listing` / `SAMPLE_LISTINGS` / `filter_listings` |
+| `data/seattle_rentals.jsonl` | Frozen RentCast Active Seattle snapshot (one listing per line) |
+| `data/seattle_rentals.meta.json` | Snapshot `fetched_at` / query metadata |
 | `scripts/fetch_rentcast_listings.py` | Offline RentCast pull; **do not import from the app** |
 | `scripts/build_vector_store.py` | Offline FAISS build into gitignored `data/faiss/`; **do not import from the app** |
 | `leasegpt/retriever.py` | Chunking, FastEmbed (`BAAI/bge-small-en-v1.5`) + in-memory FAISS, `retrieve_sources` |
@@ -49,7 +50,7 @@ UI: `layout="centered"`, tabs **Chat / Sources / Listings**. Sidebar is the Groq
 - Streamlit is **1.19.0**: `st.experimental_rerun()` is correct; do not switch to `st.rerun()` without bumping Streamlit.
 - Pin LangChain at `0.0.181`. Casual upgrades break `initialize_agent` / `RetrievalQA`.
 - Escape listing text before `unsafe_allow_html`.
-- New sample listings: refresh `data/seattle_rentals.json` with the fetch script (or add records there). Do not hardcode Craigslist ads back into `listings.py`.
+- New sample listings: refresh `data/seattle_rentals.jsonl` with the fetch script (or add records there). Do not hardcode Craigslist ads back into `listings.py`.
 - Hosting: GitHub Pages cannot run this. Spaces use Docker (`Dockerfile` bakes FastEmbed weights). Community Cloud installs from `requirements.txt`. README YAML frontmatter is for Hugging Face.
 
 ## Do not
