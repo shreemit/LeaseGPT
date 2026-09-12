@@ -5,6 +5,7 @@ __pycache__
 .env
 *.pkl
 *.faiss
+data/faiss/
 .idea
 .vscode
 .DS_Store

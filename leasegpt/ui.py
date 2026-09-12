@@ -4,13 +4,15 @@ from leasegpt.listings import (
     NEIGHBORHOODS,
     PRICE_MAX,
     PRICE_MIN,
+    SAMPLE_LISTINGS,
+    SNAPSHOT_LABEL,
     filter_listings,
 )
 
 EXAMPLE_QUERIES = [
-    "3-bedroom near UW under $2800",
-    "Something with in-unit laundry and parking",
-    "Compare U-District options vs Ballard",
+    "2-bedroom under $2500 in Seattle",
+    "What's available near UW in the U-District?",
+    "Compare studios vs 1-bedrooms in Central",
 ]
 
 PAGE_CSS = """
@@ -71,14 +73,14 @@ def render_header():
     st.header("LeaseGPT")
     st.markdown(
         '<p class="lease-kicker">Ask in plain language; answers are grounded '
-        "in a small Seattle listing sample.</p>",
+        "in a dated Seattle RentCast snapshot, not live inventory.</p>",
         unsafe_allow_html=True,
     )
 
 
 def render_sidebar(api_key_present: bool):
     with st.sidebar:
-        st.caption("Seattle sample · RAG demo")
+        st.caption("Seattle RentCast snapshot · RAG demo")
         sidebar_key = st.text_input("Groq API key", type="password")
         if api_key_present and not sidebar_key:
             st.caption("Using GROQ_API_KEY from the environment.")
@@ -108,7 +110,10 @@ def render_listings_tab():
     )
     neighborhood = st.selectbox("Neighborhood", NEIGHBORHOODS)
     filtered = filter_listings(price_range[0], price_range[1], neighborhood)
-    st.caption(f"{len(filtered)} of 4 listings · 3-bedroom sample · Seattle")
+    st.caption(
+        f"{len(filtered)} of {len(SAMPLE_LISTINGS)} listings · "
+        f"{SNAPSHOT_LABEL} · Seattle"
+    )
     for listing in filtered:
         _listing_card(listing)
 
@@ -141,7 +146,7 @@ def render_composer():
     with st.form("ask_form", clear_on_submit=True):
         query = st.text_input(
             "Your question",
-            placeholder="e.g. 3-bedroom near UW under $2800",
+            placeholder="e.g. 2-bedroom under $2500 in Seattle",
             label_visibility="collapsed",
         )
         submitted = st.form_submit_button("Ask")
