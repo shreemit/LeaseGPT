@@ -1,81 +1,42 @@
 from dataclasses import dataclass
-import re
+from datetime import datetime
+from pathlib import Path
+import json
 
-doc1 = '''
-Title: $2,650 / 3br - 1000ft2 - 3 Bedroom Loft Available Now! Great Location! U District (U-District)
-Cost: 2650 
-Description:
-Our beautiful apartments have quality options to make you feel at home.
-Community Info:
-As Seattles premier UW off-campus housing, Campus View & Avalon on 7th offer a range of spacious, recently remodeled residences with different floor plan options. Choose from Studio, 1, 2 & 3 bedroom Seattle U District apartments featuring a prime location and desirable amenities including a controlled access garage, rooftop deck, and more. Our professional, on-site management and maintenance staff keeps everything running smoothly!
-Our Seattle U District apartments are just blocks away from the University of Washington, making it easy to commute to class and meet up with friends! Were walking distance to many popular eateries, coffee shops, bars and stores in the University District. Its also just a quick bus or car ride to the heart of downtown Seattle.
-Contact us today to see how you can call Campus View or Avalon, the top student housing in Seattle, your home away from home! Our office can answer any questions you may have and get you scheduled for a tour.
-Campus View has two unique UW off-campus housing options located right next door to one another.
-Campus View I: Offering 2 and 3 bedroom homes, complete with granite counter tops, vinyl flooring, large bedrooms and spacious closets. Some of our University District apartments even feature spectacular views of The Space Needle, Lake Union, Mt. Rainier and Downtown.
-Campus View II: Offering1, 2 and 3 bedroom homes, complete with stone counter tops, stainless steel appliances, vinyl flooring, spacious closets, and private balconies. Some of the options also feature vaulted ceilings and a skylight in the living room.
-Just steps from Campus View you will find Avalon on 7th.
-Avalon on 7th: Offering Studio, 1 Bedroom, 2 Bedroom and 3 Bedroom homes, complete with new appliances, new flooring, new lighting, and some even offer balconies and lofts. These spacious open layouts will make you feel right at home!
-You won't find better UW off-campus student housing in Seattle!
-'''
+SNAPSHOT_PATH = Path(__file__).resolve().parent.parent / "data" / "seattle_rentals.jsonl"
+META_PATH = Path(__file__).resolve().parent.parent / "data" / "seattle_rentals.meta.json"
 
-doc2 = '''
-Title: University District  3bd/2ba - M&J ~ close to UW!
-Cost: 2795
-Description:
-Short Term Lease - Available Available Spring/Summer Only - Schedule a Tour Today!
-
-3 Bedroom & 1.5 Bathroom Apartment
-
-For more information and to Schedule a tour please reply directly to this ad or contact show contact info .
-
-Caprice Apartments is conveniently located, just west of the University of Washington campus and blocks from all the conveniences of the university district.
-
-* North Facing Patio
-* All Vinyl Flooring - No Carpet
-* Short walking distance to University of Washington campus
-* Intercom Entry
-* Easy Bus Access
-* Onsite laundry
-* Spacious Bedrooms & Closet Space
-* Internet & Cable TV ready for service set up with provider
-* Garage resident parking is available $100 - $150 per month
-
-For more information please reply directly to this ad or contact show contact info .
-do NOT contact me with unsolicited services or offers
-'''
-
-doc3 ='''
-Title:  3 Bedroom 1.5 Bath Pre-lease for Fall 2023 $2350-$2450 (Seattle, WA)
-Cost: 2400
-Description:
-Please excuse the mess (these units are currently occupied), it will be cleaned before you move in.
-Our building is within walking distance to UW, a quick jog or bike ride to Greenlake and on a direct bus-line to downtown Seattle. Our units have recently been remodeled with all new cabinets, appliances (including a dishwasher and microwave) and fixtures! Some units have upgraded vinyl plank flooring as well. We have an elevator, laundry facilities and bike rack, and we also offer 1 FREE garage parking space. Sorry we do not accept pets or smoking.
-3 Bedroom 1.5 Bathroom $2350-2450 depending on the floor you are on
-There is a $40 credit checking fee per person, and we require a yearly lease, with last month's rent and a security deposit for those qualified to move in.
-Please feel free to reply to this ad or call show contact info and we can send pictures and a video tour and if you are interested we can arrange a showing of the unit.
-do NOT contact me with unsolicited services or offers
-'''
-
-doc4 = '''
-Title: Proximity to UVillage shopping district, Air Conditioning in all homes
-Cost: 5336
-Description:
-Two-story penthouse with three decks including your own private rooftop deck!
-Perfect location and just in time for spring and summer!
-- Secure elevator
-- Gas range
-- Full size washer and dryer!
-- Air conditioning
-- Secured garage parking
-- Private rooftop deck
-- 2 stories
-- Gorgeous views!
-Enjoy spectacular views and a great neighborhood at The Pacific Apartments. Located in the Ballard/Fremont/Wallingford area, we are situated alongside the Burke Gilman Trail, and just blocks from Gas Works Park, Woodland Park, the University of Washington, Interstate 5 Express Lanes, shopping, dining, entertainment, and much more!
-Tenant pays all utilities, one year lease.
-Check out our website to see Matterport 3D Tour and floorplans!
-https://pacific-apartments.com/property/unit-408/
-Call show contact info or show contact info to make this your next home!
-'''
+ZIP_TO_NEIGHBORHOOD = {
+    "98101": "Downtown",
+    "98102": "Capitol Hill",
+    "98103": "Fremont/Wallingford",
+    "98104": "Pioneer Square",
+    "98105": "U-District",
+    "98106": "Delridge",
+    "98107": "Ballard",
+    "98108": "Georgetown",
+    "98109": "South Lake Union",
+    "98112": "Madison Park",
+    "98115": "North Seattle",
+    "98116": "West Seattle",
+    "98117": "Ballard",
+    "98118": "Rainier Valley",
+    "98119": "Queen Anne",
+    "98121": "Belltown",
+    "98122": "Central",
+    "98125": "Northgate",
+    "98126": "West Seattle",
+    "98133": "Bitter Lake",
+    "98134": "SODO",
+    "98136": "West Seattle",
+    "98144": "Mount Baker",
+    "98146": "White Center",
+    "98154": "Downtown",
+    "98164": "Downtown",
+    "98174": "Downtown",
+    "98195": "U-District",
+    "98199": "Magnolia",
+}
 
 
 @dataclass(frozen=True)
@@ -87,61 +48,154 @@ class Listing:
     raw: str
 
 
-def _parse_title(raw: str) -> str:
-    for line in raw.splitlines():
-        if line.startswith("Title:"):
-            return line.split("Title:", 1)[1].strip()
-    return "Listing"
+def _load_jsonl(path: Path) -> list:
+    records = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        item = json.loads(line)
+        if isinstance(item, dict):
+            records.append(item)
+    return records
 
 
-def _parse_cost(raw: str) -> int:
-    for line in raw.splitlines():
-        if line.startswith("Cost:"):
-            return int(re.sub(r"[^\d]", "", line.split("Cost:", 1)[1]))
-    return 0
+def _load_snapshot() -> dict:
+    if not SNAPSHOT_PATH.is_file():
+        raise FileNotFoundError(
+            f"Missing listing snapshot at {SNAPSHOT_PATH}. "
+            "Run: uv run python scripts/fetch_rentcast_listings.py"
+        )
+    meta = {}
+    if META_PATH.is_file():
+        loaded = json.loads(META_PATH.read_text(encoding="utf-8"))
+        if isinstance(loaded, dict):
+            meta = loaded
+    return {**meta, "listings": _load_jsonl(SNAPSHOT_PATH)}
 
 
-def _parse_neighborhood(raw: str) -> str:
-    lowered = raw.lower()
-    if "ballard" in lowered or "fremont" in lowered or "wallingford" in lowered:
-        return "Ballard/Fremont/Wallingford"
-    return "U-District"
+def _snapshot_date(fetched_at: str) -> str:
+    if not fetched_at:
+        return "unknown date"
+    try:
+        return datetime.fromisoformat(fetched_at.replace("Z", "+00:00")).date().isoformat()
+    except ValueError:
+        return fetched_at[:10]
 
 
-SAMPLE_LISTINGS = [
-    Listing(
-        title=_parse_title(doc1),
-        cost=_parse_cost(doc1),
-        neighborhood=_parse_neighborhood(doc1),
-        bedrooms_label="3-bedroom sample",
-        raw=doc1,
-    ),
-    Listing(
-        title=_parse_title(doc2),
-        cost=_parse_cost(doc2),
-        neighborhood=_parse_neighborhood(doc2),
-        bedrooms_label="3-bedroom sample",
-        raw=doc2,
-    ),
-    Listing(
-        title=_parse_title(doc3),
-        cost=_parse_cost(doc3),
-        neighborhood=_parse_neighborhood(doc3),
-        bedrooms_label="3-bedroom sample",
-        raw=doc3,
-    ),
-    Listing(
-        title=_parse_title(doc4),
-        cost=_parse_cost(doc4),
-        neighborhood=_parse_neighborhood(doc4),
-        bedrooms_label="3-bedroom sample",
-        raw=doc4,
-    ),
-]
+def _neighborhood(zip_code: str) -> str:
+    zip_code = (zip_code or "").strip()
+    if zip_code in ZIP_TO_NEIGHBORHOOD:
+        return ZIP_TO_NEIGHBORHOOD[zip_code]
+    return f"Seattle {zip_code}" if zip_code else "Seattle"
+
+
+def _bedrooms_label(bedrooms) -> str:
+    if bedrooms is None:
+        return "Unknown beds"
+    try:
+        count = int(bedrooms)
+    except (TypeError, ValueError):
+        return "Unknown beds"
+    if count == 0:
+        return "Studio"
+    return f"{count}-bedroom"
+
+
+def _beds_short(bedrooms) -> str:
+    if bedrooms is None:
+        return "?br"
+    try:
+        count = int(bedrooms)
+    except (TypeError, ValueError):
+        return "?br"
+    return "studio" if count == 0 else f"{count}br"
+
+
+def _int_price(value) -> int | None:
+    if value is None:
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _optional_line(label: str, value) -> str:
+    if value is None or value == "":
+        return ""
+    return f"{label}: {value}\n"
+
+
+def _synthesize_raw(record: dict, title: str, cost: int, neighborhood: str) -> str:
+    bedrooms = record.get("bedrooms")
+    office = record.get("listingOffice") or {}
+    office_name = office.get("name") if isinstance(office, dict) else None
+    listed = record.get("listedDate") or ""
+    if isinstance(listed, str) and "T" in listed:
+        listed = listed.split("T", 1)[0]
+    parts = [
+        f"Title: {title}\n",
+        f"Cost: {cost}\n",
+        f"Neighborhood: {neighborhood}\n",
+        _optional_line("Address", record.get("formattedAddress")),
+        _optional_line("ZIP", record.get("zipCode")),
+        _optional_line("Property type", record.get("propertyType")),
+        _optional_line("Bedrooms", bedrooms if bedrooms is not None else None),
+        _optional_line("Bathrooms", record.get("bathrooms")),
+        _optional_line("Square footage", record.get("squareFootage")),
+        _optional_line("Year built", record.get("yearBuilt")),
+        _optional_line("Status", record.get("status")),
+        _optional_line("Listed", listed),
+        _optional_line("Days on market", record.get("daysOnMarket")),
+        _optional_line("Listing office", office_name),
+    ]
+    return "".join(parts).strip() + "\n"
+
+
+def _listing_from_record(record: dict) -> Listing | None:
+    address = (record.get("formattedAddress") or "").strip()
+    cost = _int_price(record.get("price"))
+    if not address or cost is None:
+        return None
+    bedrooms = record.get("bedrooms")
+    title = f"${cost:,} / {_beds_short(bedrooms)} — {address}"
+    neighborhood = _neighborhood(str(record.get("zipCode") or ""))
+    return Listing(
+        title=title,
+        cost=cost,
+        neighborhood=neighborhood,
+        bedrooms_label=_bedrooms_label(bedrooms),
+        raw=_synthesize_raw(record, title, cost, neighborhood),
+    )
+
+
+_SNAPSHOT = _load_snapshot()
+SNAPSHOT_FETCHED_AT = _snapshot_date(_SNAPSHOT.get("fetched_at") or "")
+if _SNAPSHOT.get("source") == "demo-placeholder":
+    SNAPSHOT_LABEL = f"demo snapshot {SNAPSHOT_FETCHED_AT}"
+else:
+    SNAPSHOT_LABEL = f"RentCast snapshot {SNAPSHOT_FETCHED_AT}"
+
+SAMPLE_LISTINGS = []
+for _record in _SNAPSHOT.get("listings") or []:
+    if not isinstance(_record, dict):
+        continue
+    _listing = _listing_from_record(_record)
+    if _listing is not None:
+        SAMPLE_LISTINGS.append(_listing)
+
+if not SAMPLE_LISTINGS:
+    raise ValueError(
+        f"No usable listings in {SNAPSHOT_PATH}. "
+        "Re-run: uv run python scripts/fetch_rentcast_listings.py"
+    )
 
 NEIGHBORHOODS = ["All"] + sorted({listing.neighborhood for listing in SAMPLE_LISTINGS})
 PRICE_MIN = min(listing.cost for listing in SAMPLE_LISTINGS)
 PRICE_MAX = max(listing.cost for listing in SAMPLE_LISTINGS)
+if PRICE_MAX <= PRICE_MIN:
+    PRICE_MAX = PRICE_MIN + 1
 
 
 def filter_listings(price_min: int, price_max: int, neighborhood: str):
@@ -153,4 +207,3 @@ def filter_listings(price_min: int, price_max: int, neighborhood: str):
             continue
         results.append(listing)
     return results
-

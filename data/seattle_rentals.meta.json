@@ -1,0 +1,11 @@
+{
+  "fetched_at": "2026-09-12T21:19:49Z",
+  "query": {
+    "city": "Seattle",
+    "state": "WA",
+    "status": "Active",
+    "limit": 500,
+    "added": 1000
+  },
+  "n_listings": 1020
+}

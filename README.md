@@ -10,17 +10,19 @@ pinned: false
 
 # LeaseGPT
 
-LeaseGPT is a RAG-based apartment leasing assistant. It retrieves from a small set of Seattle listing texts (FAISS + local FastEmbed embeddings) and answers as a conversational leasing agent in a Streamlit chat UI. Chat generation uses the Groq Python SDK (`openai/gpt-oss-20b`).
+LeaseGPT is a RAG-based apartment leasing assistant. It retrieves from a frozen Seattle RentCast rental snapshot (FAISS + local FastEmbed embeddings) and answers as a conversational leasing agent in a Streamlit chat UI. Chat generation uses the Groq Python SDK (`openai/gpt-oss-20b`). This is a dated sample corpus, not live inventory.
 
 ## Architecture
 
 ```
-listings (leasegpt/listings.py)
+RentCast snapshot (data/seattle_rentals.jsonl)
+        → listings (leasegpt/listings.py)
         → retriever (chunk + FastEmbed + FAISS)
         → generator (RetrievalQA tool + conversational agent via Groq)
         → Streamlit UI (app.py + leasegpt/ui.py)
 ```
 
+- **Listings** (`leasegpt/listings.py`): loads `data/seattle_rentals.jsonl` plus `data/seattle_rentals.meta.json` (Active Seattle rentals pulled from RentCast) and synthesizes RAG text. The Streamlit app never calls RentCast. Refresh locally with `RENTCAST_API_KEY` (see below).
 - **Retriever** (`leasegpt/retriever.py`): splits listing documents, builds an in-memory FAISS store with FastEmbed (`BAAI/bge-small-en-v1.5`, ONNX, no API key), and exposes similarity search via LangChain. `retrieve_sources` is a display-only search used to show grounding chunks in the UI.
 - **Generator** (`leasegpt/generator.py`): wraps retrieval in a LangChain tool and a `chat-conversational-react-description` agent. Chat is `ChatGroq` in `leasegpt/groq_chat.py` (Groq SDK, not OpenAI).
 - **UI** (`app.py`, `leasegpt/ui.py`): Centered Streamlit shell with Chat / Sources / Listings tabs. Chat has the empty-state example queries and a compact “Why this answer” expander (listing titles). Sources shows retrieved chunks. Listings holds price/neighborhood filters and sample cards. Sidebar is the Groq API key only.
@@ -46,7 +48,16 @@ uv sync
 uv run streamlit run app.py
 ```
 
-3. Chat needs a free Groq API key ([console.groq.com](https://console.groq.com)). Paste it in the sidebar, or set `GROQ_API_KEY` in a local `.env` file (not committed). Retrieval and listing cards work without a key.
+3. Chat needs a free Groq API key ([console.groq.com](https://console.groq.com)). Paste it in the sidebar, or set `GROQ_API_KEY` in a local `.env` file (not committed). Retrieval and listing cards work without a Groq key.
+
+The checked-in RentCast snapshot (`data/seattle_rentals.jsonl`, with `fetched_at` in `data/seattle_rentals.meta.json`) is enough to run the app. It is a dated sample, not live inventory. Refresh it locally (50 free RentCast requests/month; do not call this from Streamlit):
+
+```sh
+RENTCAST_API_KEY=... uv run python scripts/fetch_rentcast_listings.py
+uv run python scripts/build_vector_store.py
+```
+
+The vector index is local FastEmbed + FAISS. After a listing refresh, rebuild it with the second command (or let the app build on first chat). The index under `data/faiss/` is gitignored.
 
 Firefox/geckodriver is only required if you run `leasegpt/scraper.py` yourself.
 
@@ -75,7 +86,7 @@ If you do not want Hugging Face Pro, deploy from GitHub at [share.streamlit.io](
 
 ## Roadmap
 
-Retrieval evaluation is in progress. The next phase is an evaluation layer over the retriever (grounded listing queries, ranking metrics, and regression checks) before changing generation or scraping.
+Retrieval evaluation is in progress. The next phase is an evaluation layer over the retriever (grounded listing queries, ranking metrics, and regression checks) before changing generation.
 
 ## License
 
