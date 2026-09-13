@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LeaseGPT RAG Evaluation</title>
+  <style>
+    :root { color-scheme: light dark; --bg:#f4f1eb; --surface:#fffdf8; --text:#17211e;
+      --muted:#68736e; --border:#d9d5ca; --blue:#315d58; --teal:#d7663e;
+      --green:#287149; --red:#a53e35; --amber:#92671a; --ink:#173c38; }
+    * { box-sizing:border-box; }
+    body { margin:0; font:15px/1.55 "Avenir Next",Avenir,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 8% 2%, rgba(215,102,62,.13), transparent 26rem),
+        radial-gradient(circle at 94% 8%, rgba(49,93,88,.12), transparent 30rem),
+        var(--bg); color:var(--text); }
+    main { max-width:1320px; margin:auto; padding:56px 32px 84px; }
+    h1,h2,h3 { font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif; }
+    h1 { margin:0; max-width:800px; font-size:clamp(2.6rem,6vw,5.25rem);
+      line-height:.96; letter-spacing:-.055em; color:var(--ink); }
+    h2 { margin:52px 0 18px; font-size:1.75rem; letter-spacing:-.025em; }
+    h3 { margin:0 0 18px; font-size:1.15rem; }
+    .hero { position:relative; padding:26px 0 10px; }
+    .hero::after { content:""; position:absolute; right:2%; top:0; width:120px; height:120px;
+      border:1px solid var(--border); border-radius:50%; box-shadow:
+      -28px 24px 0 -1px var(--bg), -28px 24px 0 0 var(--teal); opacity:.8; z-index:-1; }
+    .eyebrow { display:inline-flex; align-items:center; gap:9px; margin:0 0 22px;
+      color:var(--blue); font-size:.73rem; font-weight:700; letter-spacing:.16em;
+      text-transform:uppercase; }
+    .eyebrow::before { content:""; width:26px; height:2px; background:var(--teal); }
+    .subtitle,.meta,.axis-note { color:var(--muted); } .subtitle { font-size:1.05rem; }
+    .subtitle { max-width:570px; font-size:1.15rem; }
+    .meta { margin:20px 0 32px; font-size:.86rem; } code { font-family:ui-monospace,monospace; }
+    .metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(185px,1fr)); gap:14px; }
+    .card { background:color-mix(in srgb,var(--surface) 94%,transparent);
+      border:1px solid var(--border); border-radius:5px;
+      box-shadow:0 14px 40px rgba(39,47,43,.055); }
+    .metric { position:relative; overflow:hidden; padding:21px 22px; }
+    .metric::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px;
+      background:var(--teal); } .metric:nth-child(even)::before { background:var(--blue); }
+    .metric span { color:var(--muted); display:block; font-size:.72rem; font-weight:700;
+      letter-spacing:.09em; text-transform:uppercase; }
+    .metric strong { display:block; font-family:"Iowan Old Style",Georgia,serif;
+      font-size:1.85rem; font-weight:600; margin-top:6px; }
+    .metric .delta { color:var(--green); font-weight:700; }
+    .chart-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+    .chart-card { padding:24px; min-height:390px; }
+    .chart { height:280px; display:flex; align-items:flex-end; gap:24px;
+      border-bottom:1px solid var(--border); padding:28px 12px 0; }
+    .bar-group { flex:1; height:100%; display:flex; flex-direction:column; justify-content:flex-end;
+      align-items:center; min-width:70px; }
+    .bars { width:100%; height:90%; display:flex; align-items:flex-end; justify-content:center; gap:8px; }
+    .bar-wrap { width:36%; height:100%; display:flex; flex-direction:column; justify-content:flex-end;
+      align-items:center; color:var(--muted); font-size:.72rem; }
+    .bar { width:100%; min-height:2px; border-radius:2px 2px 0 0; background:var(--blue); }
+    .bar.constraint_rerank { background:var(--teal); } .bar.score { background:var(--teal); }
+    .single { align-items:flex-end; } .single .bar { width:55%; }
+    .bar-group strong { margin-top:8px; } .legend { color:var(--muted); margin-top:16px; }
+    .legend i { display:inline-block; width:10px; height:10px; border-radius:2px;
+      background:var(--blue); margin:0 5px 0 14px; }
+    .legend i.constraint_rerank { background:var(--teal); }
+    .table-card { overflow:auto; } table { width:100%; border-collapse:collapse; min-width:760px; }
+    th,td { text-align:left; padding:12px 14px; border-bottom:1px solid var(--border); }
+    th { color:var(--muted); font-size:.78rem; letter-spacing:.04em; text-transform:uppercase; }
+    tbody tr:last-child td { border-bottom:0; }
+    .prose { padding:22px 24px; } .prose p:first-child { margin-top:0; }
+    .prose p:last-child { margin-bottom:0; } .method-grid { display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+    .method-grid h3 { font-size:1rem; margin-bottom:8px; }
+    .method-grid p { color:var(--muted); margin:0; }
+    .toolbar { display:flex; justify-content:flex-end; margin:-48px 0 16px; }
+    select { font:inherit; padding:8px 12px; border:1px solid var(--border); border-radius:8px;
+      background:var(--surface); color:var(--text); }
+    .pill { display:inline-block; border-radius:2px; padding:3px 8px; font-size:.7rem;
+      font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+      background:#e2e8f0; color:#334155; white-space:nowrap; }
+    .pill.helped { background:#dcfce7; color:var(--green); }
+    .pill.hurt { background:#fee2e2; color:var(--red); }
+    .pill.unscored { background:#fef3c7; color:var(--amber); }
+    .empty { padding:22px; color:var(--muted); }
+    details { margin-top:20px; } details pre { white-space:pre-wrap; padding:20px; overflow:auto; }
+    @media (max-width:800px) { main { padding:30px 16px 50px; }
+      .chart-grid { grid-template-columns:1fr; } .toolbar { margin:0 0 12px; justify-content:flex-start; }
+      .chart { gap:8px; } .hero::after { display:none; } }
+    @media (prefers-color-scheme:dark) { :root { --bg:#111916; --surface:#18231f;
+      --text:#e8ece7; --muted:#a4afa9; --border:#34413c; --ink:#edf4ef;
+      --blue:#79aaa3; --teal:#e5835f; }
+      .pill { background:#334155; color:#e2e8f0; } .pill.helped { background:#123c2c; }
+      .pill.hurt { background:#4a1d24; } .pill.unscored { background:#473616; } }
+  </style>
+</head>
+<body><main>
+  <header class="hero">
+    <p class="eyebrow">Retrieval intelligence report</p>
+    <h1>LeaseGPT RAG evaluation</h1>
+    <p class="subtitle">Retrieval quality and grounded-generation evidence</p>
+    <p class="meta">Snapshot <code>2026-09-12</code> ·
+      digest <code>099d05411c0b</code> ·
+      embedding <code>BAAI/bge-small-en-v1.5</code> ·
+      generated <code>2026-09-12T22:49:56.919077+00:00</code></p>
+    <div class="metrics">
+      <div class="card metric"><span>Queries</span><strong>25</strong></div>
+      <div class="card metric"><span>Snapshot</span><strong>2026-09-12</strong></div>
+      <div class="card metric"><span>Embedding</span><strong>bge-small-en-v1.5</strong></div>
+      <div class="card metric"><span>LLM judge</span><strong>ran</strong></div>
+    </div>
+  </header>
+  <section>
+    <h2>What this evaluation tests</h2>
+    <div class="card prose">
+      <p>This evaluation asks two separate questions: <strong>does retrieval find the
+      right listing records?</strong> and <strong>does the generated answer stay
+      supported by the records it received?</strong> Keeping those stages separate
+      makes failures diagnosable instead of collapsing quality into one opaque score.</p>
+      <div class="method-grid">
+        <div><h3>Dataset</h3><p>25 realistic Seattle rental
+        searches are labeled against the frozen RentCast snapshot. Labels use stable
+        listing IDs and observable fields such as bedrooms, price, neighborhood, and
+        property type. Three unsupported or impossible requests are retained as
+        qualitative hard cases and excluded from macro retrieval averages.</p></div>
+        <div><h3>Recall@k</h3><p>Of the listings labeled relevant for a query, the
+        fraction appearing in the first k retrieved results. Higher recall means fewer
+        known-good listings were missed.</p></div>
+        <div><h3>Precision@k</h3><p>Of the first k retrieved positions, the fraction
+        occupied by labeled-relevant listings. Higher precision means less irrelevant
+        context reaches the generator.</p></div>
+        <div><h3>Macro averaging</h3><p>Recall and precision are calculated per labeled
+        query and then averaged, so a query with many labels does not dominate the
+        result. Scores are reported at k = 3, 5, and 10.</p></div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <h2>Retrieval comparison</h2>
+    <div class="card prose">
+      <p><strong>Baseline</strong> reproduces the app's dense FAISS similarity ranking
+      with local <code>BAAI/bge-small-en-v1.5</code> embeddings.
+      <strong>Constraint re-rank</strong> takes the first
+      25 dense candidates, then prioritizes explicit
+      bedroom, budget, neighborhood, and property-type matches. This is evaluation-only
+      and does not change the LeaseGPT app.</p>
+      <p>A chunk-size comparison is not meaningful for this snapshot: every synthesized
+      listing is shorter than the app's split threshold and therefore already forms one
+      document.</p>
+    </div>
+    <div class="metrics">
+      <div class="card metric"><span>Baseline recall@5</span><strong>8.7%</strong></div>
+      <div class="card metric"><span>Re-ranked recall@5</span><strong>39.8%</strong><span class="delta">+31.1%</span></div>
+      <div class="card metric"><span>Baseline precision@5</span><strong>6.4%</strong></div>
+      <div class="card metric"><span>Re-ranked precision@5</span><strong>30.0%</strong><span class="delta">+23.6%</span></div>
+    </div>
+    <div class="chart-grid">
+      <section class="card chart-card"><h3>Mean recall</h3><div class="chart"><div class="bar-group"><div class="bars"><div class="bar-wrap" title="baseline: 7.2%"><div class="bar baseline" style="height:7.197%"></div><span>7.2%</span></div><div class="bar-wrap" title="constraint_rerank: 26.1%"><div class="bar constraint_rerank" style="height:26.136%"></div><span>26.1%</span></div></div><strong>@3</strong></div><div class="bar-group"><div class="bars"><div class="bar-wrap" title="baseline: 8.7%"><div class="bar baseline" style="height:8.712%"></div><span>8.7%</span></div><div class="bar-wrap" title="constraint_rerank: 39.8%"><div class="bar constraint_rerank" style="height:39.773%"></div><span>39.8%</span></div></div><strong>@5</strong></div><div class="bar-group"><div class="bars"><div class="bar-wrap" title="baseline: 19.3%"><div class="bar baseline" style="height:19.318%"></div><span>19.3%</span></div><div class="bar-wrap" title="constraint_rerank: 42.0%"><div class="bar constraint_rerank" style="height:42.045%"></div><span>42.0%</span></div></div><strong>@10</strong></div></div><div class="legend"><i class="baseline"></i>Baseline <i class="constraint_rerank"></i>Constraint re-rank</div></section>
+      <section class="card chart-card"><h3>Mean precision</h3><div class="chart"><div class="bar-group"><div class="bars"><div class="bar-wrap" title="baseline: 9.1%"><div class="bar baseline" style="height:9.091%"></div><span>9.1%</span></div><div class="bar-wrap" title="constraint_rerank: 31.8%"><div class="bar constraint_rerank" style="height:31.818%"></div><span>31.8%</span></div></div><strong>@3</strong></div><div class="bar-group"><div class="bars"><div class="bar-wrap" title="baseline: 6.4%"><div class="bar baseline" style="height:6.364%"></div><span>6.4%</span></div><div class="bar-wrap" title="constraint_rerank: 30.0%"><div class="bar constraint_rerank" style="height:30.000%"></div><span>30.0%</span></div></div><strong>@5</strong></div><div class="bar-group"><div class="bars"><div class="bar-wrap" title="baseline: 6.8%"><div class="bar baseline" style="height:6.818%"></div><span>6.8%</span></div><div class="bar-wrap" title="constraint_rerank: 15.9%"><div class="bar constraint_rerank" style="height:15.909%"></div><span>15.9%</span></div></div><strong>@10</strong></div></div><div class="legend"><i class="baseline"></i>Baseline <i class="constraint_rerank"></i>Constraint re-rank</div></section>
+    </div>
+    <h2>Per-query retrieval</h2>
+    <div class="toolbar"><label>Impact&nbsp;
+      <select id="impact-filter"><option value="all">All queries</option>
+        <option value="helped">Re-ranker helped</option><option value="hurt">Re-ranker hurt</option>
+        <option value="same">No change</option><option value="unscored">Unscored hard cases</option>
+      </select></label></div>
+    <div class="card table-card"><table id="retrieval-table">
+      <thead><tr><th>ID</th><th>Query</th><th>Labeling note</th><th>Gold</th><th>Baseline hits@5</th>
+        <th>Re-ranked hits@5</th><th>Impact</th></tr></thead>
+      <tbody><tr data-impact="same"><td>q01</td><td>Studio under $1,800 in Capitol Hill</td><td>Four lowest-priced snapshot studios in Capitol Hill at or below $1,800.</td><td>4</td><td>1</td><td>1</td><td><span class="pill same">No change</span></td></tr><tr data-impact="helped"><td>q02</td><td>1 bedroom under $2,100 in Ballard</td><td>Four lowest-priced one-bedroom Ballard listings at or below $2,100.</td><td>4</td><td>1</td><td>2</td><td><span class="pill helped">Helped</span></td></tr><tr data-impact="helped"><td>q03</td><td>2 bedroom under $2,800 in Fremont/Wallingford</td><td>Four lowest-priced two-bedroom 98103 listings at or below $2,800.</td><td>4</td><td>0</td><td>2</td><td><span class="pill helped">Helped</span></td></tr><tr data-impact="same"><td>q04</td><td>2 bedroom under $2,600 in West Seattle</td><td>Four lowest-priced two-bedroom West Seattle listings at or below $2,600.</td><td>4</td><td>0</td><td>0</td><td><span class="pill same">No change</span></td></tr><tr data-impact="helped"><td>q05</td><td>3 bedroom under $3,500 in Rainier Valley</td><td>Four lowest-priced three-bedroom Rainier Valley listings at or below $3,500.</td><td>4</td><td>0</td><td>3</td><td><span class="pill helped">Helped</span></td></tr><tr data-impact="same"><td>q06</td><td>Studio under $1,700 in the U-District</td><td>Four lowest-priced U-District studios at or below $1,700.</td><td>4</td><td>1</td><td>1</td><td><span class="pill same">No change</span></td></tr><tr data-impact="helped"><td>q07</td><td>1 bedroom under $2,000 in Northgate</td><td>Four lowest-priced one-bedroom Northgate listings at or below $2,000.</td><td>4</td><td>0</td><td>1</td><td><span class="pill helped">Helped</span></td></tr><tr data-impact="helped"><td>q08</td><td>2 bedroom under $3,000 in Queen Anne</td><td>Four lowest-priced two-bedroom Queen Anne listings at or below $3,000.</td><td>4</td><td>0</td><td>1</td><td><span class="pill helped">Helped</span></td></tr><tr data-impact="helped"><td>q09</td><td>1 bedroom under $2,300 in South Lake Union</td><td>Four lowest-priced one-bedroom 98109 listings at or below $2,300.</td><td>4</td><td>0</td><td>1</td><td><span class="pill helped">Helped</span></td></tr><tr data-impact="helped"><td>q10</td><td>2 bedroom under $3,200 in Capitol Hill</td><td>Four lowest-priced two-bedroom Capitol Hill listings at or below $3,200.</td><td>4</td><td>0</td><td>1</td><td><span class="pill helped">Helped</span></td></tr><tr data-impact="same"><td>q11</td><td>2 bedroom townhouse under $3,500</td><td>Four lowest-priced two-bedroom townhouses in the Seattle snapshot at or below $3,500.</td><td>4</td><td>0</td><td>0</td><td><span class="pill same">No change</span></td></tr><tr data-impact="same"><td>q12</td><td>1 bedroom condo under $2,500 in Downtown</td><td>All one-bedroom Downtown condos at or below $2,500.</td><td>2</td><td>0</td><td>0</td><td><span class="pill same">No change</span></td></tr><tr data-impact="helped"><td>q13</td><td>3 bedroom single family home under $4,000 in West Seattle</td><td>All three-bedroom single-family West Seattle listings at or below $4,000.</td><td>2</td><td>0</td><td>1</td><td><span class="pill helped">Helped</span></td></tr><tr data-impact="helped"><td>q14</td><td>2 bedroom apartment under $2,600 in Bitter Lake</td><td>Four lowest-priced two-bedroom Bitter Lake apartments at or below $2,600.</td><td>4</td><td>0</td><td>3</td><td><span class="pill helped">Helped</span></td></tr><tr data-impact="same"><td>q15</td><td>4 bedroom under $4,500 in the U-District</td><td>All four-bedroom U-District listings at or below $4,500.</td><td>2</td><td>0</td><td>0</td><td><span class="pill same">No change</span></td></tr><tr data-impact="helped"><td>q16</td><td>2 bedroom under $2,800 in Ballard</td><td>Four lowest-priced two-bedroom Ballard listings at or below $2,800.</td><td>4</td><td>0</td><td>3</td><td><span class="pill helped">Helped</span></td></tr><tr data-impact="same"><td>q17</td><td>Studio under $1,900 in Central Seattle</td><td>Four lowest-priced Central studios at or below $1,900.</td><td>4</td><td>1</td><td>1</td><td><span class="pill same">No change</span></td></tr><tr data-impact="helped"><td>q18</td><td>1 bedroom under $2,200 in Belltown</td><td>Four lowest-priced one-bedroom Belltown listings at or below $2,200.</td><td>4</td><td>0</td><td>4</td><td><span class="pill helped">Helped</span></td></tr><tr data-impact="helped"><td>q19</td><td>3 bedroom under $4,000 in North Seattle</td><td>Four lowest-priced three-bedroom North Seattle listings at or below $4,000.</td><td>4</td><td>0</td><td>2</td><td><span class="pill helped">Helped</span></td></tr><tr data-impact="helped"><td>q20</td><td>1 bedroom apartment under $1,900 in Delridge</td><td>All one-bedroom Delridge apartments at or below $1,900.</td><td>3</td><td>2</td><td>3</td><td><span class="pill helped">Helped</span></td></tr><tr data-impact="helped"><td>q21</td><td>2 bedroom under $2,700 in Mount Baker</td><td>All two-bedroom Mount Baker listings at or below $2,700.</td><td>4</td><td>1</td><td>2</td><td><span class="pill helped">Helped</span></td></tr><tr data-impact="unscored"><td>q22</td><td>2 bedroom condo under $3,200 in Madison Park</td><td>Hard case: the snapshot has no listing satisfying all stated constraints.</td><td>0</td><td>—</td><td>—</td><td><span class="pill unscored">Unscored hard case</span></td></tr><tr data-impact="helped"><td>q23</td><td>1 bedroom under $2,200 in Fremont/Wallingford</td><td>Four lowest-priced one-bedroom 98103 listings at or below $2,200.</td><td>4</td><td>0</td><td>1</td><td><span class="pill helped">Helped</span></td></tr><tr data-impact="unscored"><td>q24</td><td>2 bedroom under $2,000 near Capitol Hill with parking</td><td>Hard case: parking is not represented in the frozen snapshot, so relevance cannot be labeled.</td><td>0</td><td>—</td><td>—</td><td><span class="pill unscored">Unscored hard case</span></td></tr><tr data-impact="unscored"><td>q25</td><td>Pet-friendly studio under $1,600 in Ballard</td><td>Hard case: pet policy is not represented in the frozen snapshot, so relevance cannot be labeled.</td><td>0</td><td>—</td><td>—</td><td><span class="pill unscored">Unscored hard case</span></td></tr></tbody>
+    </table></div>
+  </section>
+  <section>
+          <h2>Generation quality</h2>
+          <div class="metrics">
+            <div class="card metric"><span>Average faithfulness</span><strong>4.72/5</strong></div>
+            <div class="card metric"><span>Average relevance</span><strong>4.76/5</strong></div>
+            <div class="card metric"><span>Judged queries</span><strong>25</strong></div>
+          </div>
+          <div class="chart-grid">
+            <section class="card chart-card"><h3>Faithfulness distribution</h3><div class="chart histogram"><div class="bar-group"><div class="bars single"><div class="bar score" style="height:4.545%"></div><span>1</span></div><strong>1</strong></div><div class="bar-group"><div class="bars single"><div class="bar score" style="height:0.000%"></div><span>0</span></div><strong>2</strong></div><div class="bar-group"><div class="bars single"><div class="bar score" style="height:4.545%"></div><span>1</span></div><strong>3</strong></div><div class="bar-group"><div class="bars single"><div class="bar score" style="height:4.545%"></div><span>1</span></div><strong>4</strong></div><div class="bar-group"><div class="bars single"><div class="bar score" style="height:100.000%"></div><span>22</span></div><strong>5</strong></div></div><div class="axis-note">Score (1–5)</div></section>
+            <section class="card chart-card"><h3>Relevance distribution</h3><div class="chart histogram"><div class="bar-group"><div class="bars single"><div class="bar score" style="height:4.348%"></div><span>1</span></div><strong>1</strong></div><div class="bar-group"><div class="bars single"><div class="bar score" style="height:0.000%"></div><span>0</span></div><strong>2</strong></div><div class="bar-group"><div class="bars single"><div class="bar score" style="height:4.348%"></div><span>1</span></div><strong>3</strong></div><div class="bar-group"><div class="bars single"><div class="bar score" style="height:0.000%"></div><span>0</span></div><strong>4</strong></div><div class="bar-group"><div class="bars single"><div class="bar score" style="height:100.000%"></div><span>23</span></div><strong>5</strong></div></div><div class="axis-note">Score (1–5)</div></section>
+          </div>
+          <div class="card table-card">
+            <table>
+              <thead><tr><th>ID</th><th>Query</th><th>Faithfulness</th><th>Relevance</th><th>Rationale</th></tr></thead>
+              <tbody><tr><td>q01</td><td>Studio under $1,800 in Capitol Hill</td><td>5</td><td>5</td><td>All listed facts are directly supported by the retrieved listings and the answer fully addresses the user’s request.</td></tr><tr><td>q02</td><td>1 bedroom under $2,100 in Ballard</td><td>5</td><td>5</td><td>The answer accurately cites the single 1‑bedroom listing under $2,100 from the retrieved data and fully addresses the user’s request.</td></tr><tr><td>q03</td><td>2 bedroom under $2,800 in Fremont/Wallingford</td><td>5</td><td>5</td><td>The answer correctly states that no 2‑bedroom listings under $2,800 exist, which is supported by the retrieved listings.</td></tr><tr><td>q04</td><td>2 bedroom under $2,600 in West Seattle</td><td>5</td><td>5</td><td>Answer is fully supported by retrieved listings and directly addresses the request.</td></tr><tr><td>q05</td><td>3 bedroom under $3,500 in Rainier Valley</td><td>5</td><td>5</td><td>Answer directly cites the retrieved 3‑bedroom listing under $3,500 and confirms no other such listings exist, fully matching the query.</td></tr><tr><td>q06</td><td>Studio under $1,700 in the U-District</td><td>5</td><td>5</td><td>All claims are directly supported by the retrieved listings and the answer fully addresses the user&#x27;s request.</td></tr><tr><td>q07</td><td>1 bedroom under $2,000 in Northgate</td><td>3</td><td>3</td><td>The answer correctly lists two 1‑bedroom units but mistakenly includes a 2‑bedroom listing as a 1‑bedroom option, violating the user’s bedroom requirement.</td></tr><tr><td>q08</td><td>2 bedroom under $3,000 in Queen Anne</td><td>5</td><td>5</td><td>The answer correctly states that no 2‑bedroom listings under $3,000 exist, directly supported by the retrieved data.</td></tr><tr><td>q09</td><td>1 bedroom under $2,300 in South Lake Union</td><td>5</td><td>5</td><td>All facts match the retrieved listing and the answer directly satisfies the user’s criteria.</td></tr><tr><td>q10</td><td>2 bedroom under $3,200 in Capitol Hill</td><td>5</td><td>5</td><td>Answer directly matches retrieved listing and satisfies constraints.</td></tr><tr><td>q11</td><td>2 bedroom townhouse under $3,500</td><td>5</td><td>5</td><td>All listed properties match the user’s criteria and are directly supported by the retrieved data.</td></tr><tr><td>q12</td><td>1 bedroom condo under $2,500 in Downtown</td><td>5</td><td>5</td><td>Answer correctly states no matching listings based on retrieved data.</td></tr><tr><td>q13</td><td>3 bedroom single family home under $4,000 in West Seattle</td><td>5</td><td>5</td><td>Answer correctly states no listings meet all criteria based on retrieved data.</td></tr><tr><td>q14</td><td>2 bedroom apartment under $2,600 in Bitter Lake</td><td>5</td><td>5</td><td>All facts match the retrieved listing and the answer directly addresses the user’s request.</td></tr><tr><td>q15</td><td>4 bedroom under $4,500 in the U-District</td><td>5</td><td>5</td><td>Answer correctly states no 4‑bedroom listings under $4,500 in U‑District based on retrieved data.</td></tr><tr><td>q16</td><td>2 bedroom under $2,800 in Ballard</td><td>5</td><td>5</td><td>Answer directly lists the only 2‑bedroom property in Ballard under $2,800, fully supported by retrieved listings.</td></tr><tr><td>q17</td><td>Studio under $1,900 in Central Seattle</td><td>5</td><td>5</td><td>Answer lists all Central Seattle studios under $1,900 from retrieved listings, directly addressing the request.</td></tr><tr><td>q18</td><td>1 bedroom under $2,200 in Belltown</td><td>5</td><td>5</td><td>Answer correctly states no 1‑bedroom listings under $2,200 in Belltown based on the retrieved data.</td></tr><tr><td>q19</td><td>3 bedroom under $4,000 in North Seattle</td><td>5</td><td>5</td><td>Answer correctly states no matching listings based on retrieved data.</td></tr><tr><td>q20</td><td>1 bedroom apartment under $1,900 in Delridge</td><td>5</td><td>5</td><td>All listed apartments are directly supported by the retrieved data and fully answer the user’s request.</td></tr><tr><td>q21</td><td>2 bedroom under $2,700 in Mount Baker</td><td>5</td><td>5</td><td>Answer correctly identifies the only 2‑bedroom listing under $2,700 in Mount Baker and provides accurate details from the retrieved data.</td></tr><tr><td>q22</td><td>2 bedroom condo under $3,200 in Madison Park</td><td>5</td><td>5</td><td>The answer correctly states that no 2‑bedroom condo under $3,200 is present in the retrieved listings, fully addressing the user’s request.</td></tr><tr><td>q23</td><td>1 bedroom under $2,200 in Fremont/Wallingford</td><td>5</td><td>5</td><td>All listed units are 1‑bedroom, under $2,200, and match the retrieved data.</td></tr><tr><td>q24</td><td>2 bedroom under $2,000 near Capitol Hill with parking</td><td>4</td><td>5</td><td>Answer correctly states no listings under $2000, but claims none include parking which is unsupported.</td></tr><tr><td>q25</td><td>Pet-friendly studio under $1,600 in Ballard</td><td>1</td><td>1</td><td>Answer does not provide requested info and lacks evidence.</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+  <section>
+    <h2>How generation is judged</h2>
+    <div class="card prose">
+      <p>For each query, LeaseGPT generates an answer through the same conversational
+      agent and RetrievalQA path used by the app. A separate deterministic-temperature
+      Groq call then sees only the user query, the baseline top-4 retrieved listing
+      texts, and the answer. It assigns independent 1–5 scores for
+      <strong>faithfulness</strong> (every factual claim is supported) and
+      <strong>relevance</strong> (the answer addresses the requested constraints), plus
+      a short rationale.</p>
+      <p>These scores are model judgments rather than human ground truth. The saved
+      rubric and per-query rationales make them auditable, but repeated runs can still
+      vary. Retrieval labels are curated examples rather than exhaustive relevance
+      judgments, so precision should be interpreted comparatively.</p>
+    </div>
+  </section>
+  <details><summary>Judge rubric</summary><pre class="card">Faithfulness (support from retrieved listings):
+5 = Every factual claim is directly supported; no unsupported details.
+4 = Grounded overall, with one minor unsupported or imprecise detail.
+3 = Mostly grounded, but contains a meaningful unsupported claim or omission.
+2 = Several claims are unsupported or conflict with the retrieved listings.
+1 = Mostly fabricated, contradicted, or not based on the retrieved listings.
+
+Relevance (answering the user&#x27;s request):
+5 = Directly answers the request and addresses all material constraints.
+4 = Answers the request but misses one minor constraint or useful detail.
+3 = Partially answers; one important constraint is ignored.
+2 = Only loosely related to the request.
+1 = Off-topic or fails to answer the request.</pre></details>
+</main>
+<script>
+  const filter = document.getElementById("impact-filter");
+  filter.addEventListener("change", () => {
+    document.querySelectorAll("#retrieval-table tbody tr").forEach(row => {
+      row.hidden = filter.value !== "all" && row.dataset.impact !== filter.value;
+    });
+  });
+</script></body></html>

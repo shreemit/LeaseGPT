@@ -11,6 +11,7 @@ Python **3.10** is required (`faiss-cpu==1.7.3` has no 3.13 wheels). Use [uv](ht
 ```sh
 uv sync
 uv run streamlit run app.py
+uv run python -m eval.run_eval --skip-llm
 ```
 
 - Chat needs a Groq key ([console.groq.com](https://console.groq.com)): sidebar field, or `GROQ_API_KEY` in a gitignored `.env`. Hosted deploys use a Space / Community Cloud secret.
@@ -18,7 +19,9 @@ uv run streamlit run app.py
 - Refresh listings only via `uv run python scripts/fetch_rentcast_listings.py` with `RENTCAST_API_KEY` in the environment or a gitignored `.env` at the repo root or `leasegpt/.env`. Never import that script from the app.
 - Firefox/geckodriver: only if you run `leasegpt/scraper.py`. The app must not import the scraper (it launches Firefox at import time).
 
-There is no dedicated test runner package. Listing snapshot helpers can be checked with `uv run python -m unittest tests/test_rentcast_listings.py`. Retrieval evaluation is the documented next phase.
+There is no dedicated test runner package. Listing snapshot and evaluation
+helpers can be checked with
+`uv run python -m unittest tests/test_rentcast_listings.py tests/test_eval_metrics.py`.
 
 ## Layout
 
