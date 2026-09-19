@@ -41,6 +41,7 @@ ZIP_TO_NEIGHBORHOOD = {
 
 @dataclass(frozen=True)
 class Listing:
+    id: str
     title: str
     cost: int
     neighborhood: str
@@ -161,7 +162,9 @@ def _listing_from_record(record: dict) -> Listing | None:
     bedrooms = record.get("bedrooms")
     title = f"${cost:,} / {_beds_short(bedrooms)} — {address}"
     neighborhood = _neighborhood(str(record.get("zipCode") or ""))
+    listing_id = str(record.get("id") or "").strip() or address
     return Listing(
+        id=listing_id,
         title=title,
         cost=cost,
         neighborhood=neighborhood,

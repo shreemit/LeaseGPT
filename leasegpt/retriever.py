@@ -111,6 +111,7 @@ def retrieve_sources(vector_store, query: str, k: int = 4):
         listing = _match_listing(text)
         sources.append(
             {
+                "id": listing.id if listing else None,
                 "text": text,
                 "preview": preview,
                 "title": listing.title if listing else "Retrieved chunk",

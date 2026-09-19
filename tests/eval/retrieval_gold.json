@@ -1,0 +1,115 @@
+{
+  "snapshot_fetched_at": "2026-09-12",
+  "source": "data/seattle_rentals.jsonl",
+  "description": "Grounded listing queries for the checked-in Seattle RentCast snapshot. Relevant ids are snapshot record ids. This is a dated sample corpus, not live inventory.",
+  "queries": [
+    {
+      "id": "green-lake-2br",
+      "query": "2-bedroom apartment at 5214 Green Lake Way N",
+      "relevant_ids": ["5214-Green-Lake-Way-N,-Seattle,-WA-98103"],
+      "notes": "Unique 1918 / 850 sqft 2br on Green Lake Way."
+    },
+    {
+      "id": "seward-park-5br",
+      "query": "5-bedroom single family house at 7740 Seward Park Ave S",
+      "relevant_ids": ["7740-Seward-Park-Ave-S,-Seattle,-WA-98118"],
+      "notes": "Highest-priced snapshot listing; 5280 sqft Rainier Valley house."
+    },
+    {
+      "id": "twelfth-ave-unit-409",
+      "query": "studio at 301 12th Ave unit 409 in Central Seattle",
+      "relevant_ids": ["301-12th-Ave,-Unit-409,-Seattle,-WA-98122"],
+      "notes": "Exact unit in a multi-unit 12th Ave building."
+    },
+    {
+      "id": "ne-54th-1br",
+      "query": "1-bedroom at 2107 NE 54th Street in the U-District",
+      "relevant_ids": ["2107-Ne-54th-St,-Seattle,-WA-98105"],
+      "notes": "Distinctive 2107 Ne 54th St address (snapshot spelling Ne)."
+    },
+    {
+      "id": "queen-anne-1913-studio",
+      "query": "studio apartment at 1012 Queen Anne Ave N built in 1913",
+      "relevant_ids": ["1012-Queen-Anne-Ave-N,-Seattle,-WA-98109"],
+      "notes": "Only snapshot listing with yearBuilt 1913."
+    },
+    {
+      "id": "west-seattle-45th",
+      "query": "4-bedroom house at 1525 45th Ave SW in West Seattle",
+      "relevant_ids": ["1525-45th-Ave-SW,-Seattle,-WA-98116"],
+      "notes": "Unique 1923 West Seattle house, 3160 sqft."
+    },
+    {
+      "id": "magnolia-25th",
+      "query": "4-bedroom single family home at 2826 25th Ave W in Magnolia",
+      "relevant_ids": ["2826-25th-Ave-W,-Seattle,-WA-98199"],
+      "notes": "1966 Magnolia house, 3270 sqft."
+    },
+    {
+      "id": "ballard-townhouse",
+      "query": "3-bedroom townhouse at 2030 NW 62nd Street in Ballard",
+      "relevant_ids": ["2030-Nw-62nd-St,-Seattle,-WA-98107"],
+      "notes": "Unique Ballard townhouse address (snapshot spelling Nw)."
+    },
+    {
+      "id": "seneca-condo",
+      "query": "2-bedroom condo at 1321 Seneca St apartment 1101 downtown",
+      "relevant_ids": ["1321-Seneca-St,-Apt-1101,-Seattle,-WA-98101"],
+      "notes": "2016 downtown condo, 1185 sqft."
+    },
+    {
+      "id": "madison-park-8br",
+      "query": "8-bedroom house at 923 23rd Ave E",
+      "relevant_ids": ["923-23rd-Ave-E,-Seattle,-WA-98112"],
+      "notes": "5010 sqft Madison Park single family, yearBuilt 1910."
+    },
+    {
+      "id": "brooklyn-4br",
+      "query": "4-bedroom apartment at 4707 Brooklyn Ave NE Apt E",
+      "relevant_ids": ["4707-Brooklyn-Ave-Ne-Apt-E,-Seattle,-WA-98105"],
+      "notes": "U-District 4br; snapshot address uses Ne."
+    },
+    {
+      "id": "roy-st-studio",
+      "query": "studio at 25 W Roy St in Queen Anne",
+      "relevant_ids": ["25-W-Roy-St,-Seattle,-WA-98119"],
+      "notes": "Only snapshot listing with yearBuilt 1914."
+    },
+    {
+      "id": "dexter-townhouse",
+      "query": "2-bedroom townhouse at 2408 Dexter Ave N Unit B",
+      "relevant_ids": ["2408-Dexter-Ave-N-Unit-B,-Seattle,-WA-98109"],
+      "notes": "2020 South Lake Union townhouse."
+    },
+    {
+      "id": "latona-6br",
+      "query": "6-bedroom house at 7310 Latona Ave NE",
+      "relevant_ids": ["7310-Latona-Ave-NE,-Seattle,-WA-98115"],
+      "notes": "2970 sqft North Seattle 6br."
+    },
+    {
+      "id": "occidental-1br",
+      "query": "1-bedroom apartment at 520 Occidental Ave S unit 13",
+      "relevant_ids": ["520-Occidental-Ave-S,-Unit-13,-Seattle,-WA-98104"],
+      "notes": "Pioneer Square unit 13."
+    },
+    {
+      "id": "alder-unit-401",
+      "query": "studio unit 401 at 1023 E Alder Street",
+      "relevant_ids": ["1023-E-Alder-St,-Unit-401,-Seattle,-WA-98122"],
+      "notes": "Specific unit in a 7-unit E Alder building."
+    },
+    {
+      "id": "fairview-studios",
+      "query": "studio apartments at 3150 Fairview Ave E",
+      "relevant_ids": [
+        "3150-Fairview-Ave-E,-Apt-313,-Seattle,-WA-98102",
+        "3150-Fairview-Ave-E,-Apt-319,-Seattle,-WA-98102",
+        "3150-Fairview-Ave-E,-Apt-419,-Seattle,-WA-98102",
+        "3150-Fairview-Ave-E,-Apt-513,-Seattle,-WA-98102",
+        "3150-Fairview-Ave-E,-Apt-510,-Seattle,-WA-98102"
+      ],
+      "notes": "Multi-relevant: five studio units at the same Capitol Hill address."
+    }
+  ]
+}

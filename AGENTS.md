@@ -18,7 +18,7 @@ uv run streamlit run app.py
 - Refresh listings only via `uv run python scripts/fetch_rentcast_listings.py` with `RENTCAST_API_KEY` in the environment or a gitignored `.env` at the repo root or `leasegpt/.env`. Never import that script from the app.
 - Firefox/geckodriver: only if you run `leasegpt/scraper.py`. The app must not import the scraper (it launches Firefox at import time).
 
-There is no dedicated test runner package. Listing snapshot helpers can be checked with `uv run python -m unittest tests/test_rentcast_listings.py`. Retrieval evaluation is the documented next phase.
+There is no dedicated test runner package. Listing snapshot helpers: `uv run python -m unittest tests/test_rentcast_listings.py`. Retrieval eval (gold integrity + metrics, no embeddings): `uv run python -m unittest tests/test_retrieval_eval.py`. Retrieval regression gate (FastEmbed + FAISS, no API keys): `uv run python scripts/eval_retrieval.py`.
 
 ## Layout
 
@@ -30,6 +30,9 @@ There is no dedicated test runner package. Listing snapshot helpers can be check
 | `data/seattle_rentals.meta.json` | Snapshot `fetched_at` / query metadata |
 | `scripts/fetch_rentcast_listings.py` | Offline RentCast pull; **do not import from the app** |
 | `scripts/build_vector_store.py` | Offline FAISS build into gitignored `data/faiss/`; **do not import from the app** |
+| `scripts/eval_retrieval.py` | Offline retrieval regression gate; **do not import from the app** |
+| `tests/eval/retrieval_gold.json` | Grounded listing queries + snapshot ids for retrieval eval |
+| `leasegpt/retrieval_eval.py` | hit@k / MRR / precision@k / recall@k + threshold check |
 | `leasegpt/retriever.py` | Chunking, FastEmbed (`BAAI/bge-small-en-v1.5`) + in-memory FAISS, `retrieve_sources` |
 | `leasegpt/generator.py` | RetrievalQA tool + `chat-conversational-react-description` agent |
 | `leasegpt/groq_chat.py` | LangChain 0.0.181 `SimpleChatModel` over the Groq SDK (`openai/gpt-oss-20b`) |
@@ -43,7 +46,7 @@ UI: `layout="centered"`, tabs **Chat / Sources / Listings**. Sidebar is the Groq
 ## Conventions
 
 - Chat: `leasegpt.groq_chat.ChatGroq` only. Do not use `ChatOpenAI` / `langchain-openai`; those are incompatible with LangChain `0.0.181` `LLMChain` after PR #2.
-- Embeddings: local FastEmbed ONNX. Process-level cache in `retriever._vector_store`. Optional gitignored FAISS at `data/faiss/` (built with `uv run python scripts/build_vector_store.py`); the app loads it when the stamp matches the snapshot, otherwise it builds on first use. Do not check in the index.
+- Embeddings: local FastEmbed ONNX. Process-level cache in `retriever._vector_store`. Optional gitignored FAISS at `data/faiss/` (built with `uv run python scripts/build_vector_store.py`); the app loads it when the stamp matches the snapshot, otherwise it builds on first use. Do not check in the index. Retrieval eval uses the same store; do not rebuild it behind a Groq/OpenAI/RentCast key.
 - `retrieve_sources` is display-only. Do not fold it into the generation chain unless the user asks to change grounding.
 - **Never write a pasted API key into `os.environ`.** Hosted Streamlit shares one process; `_resolve_api_key` must stay session-scoped (sidebar key first, then env secret).
 - Example-query buttons in `render_empty_state` must **return** the chosen string. `app.py` queues `pending_query` and calls `st.experimental_rerun()`. Setting session state only inside the button does not run a turn (fixed in PR #2).

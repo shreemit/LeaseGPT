@@ -63,6 +63,7 @@ class RedactListingTests(unittest.TestCase):
         from leasegpt.listings import SAMPLE_LISTINGS, SNAPSHOT_LABEL, filter_listings
 
         self.assertGreaterEqual(len(SAMPLE_LISTINGS), 12)
+        self.assertTrue(SAMPLE_LISTINGS[0].id)
         self.assertTrue(SAMPLE_LISTINGS[0].raw.startswith("Title:"))
         self.assertIn("RentCast snapshot", SNAPSHOT_LABEL)
         self.assertNotIn("demo snapshot", SNAPSHOT_LABEL)

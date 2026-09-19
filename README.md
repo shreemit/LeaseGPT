@@ -84,9 +84,22 @@ The first boot downloads FastEmbed ONNX weights. Later cold starts after sleep a
 
 If you do not want Hugging Face Pro, deploy from GitHub at [share.streamlit.io](https://share.streamlit.io): pick this repo, `app.py`, and set `GROQ_API_KEY` in the app secrets. Community Cloud installs from `requirements.txt`.
 
+## Retrieval evaluation
+
+An offline eval scores the local FastEmbed + FAISS retriever against a small gold set of listing queries (`tests/eval/retrieval_gold.json`). Relevant ids come from the checked-in Seattle snapshot only. The suite does not call Groq, OpenAI, or RentCast.
+
+```sh
+uv run python -m unittest tests/test_retrieval_eval.py
+uv run python scripts/eval_retrieval.py
+```
+
+The unittest target checks gold-file integrity and ranking math (no embeddings). The script is the release gate: it builds or loads the same in-memory/on-disk index the app uses, reports hit@k / MRR / precision@k / recall@k, and exits non-zero if hit@4, MRR, or chunk-to-listing matching fall below fixed floors in `leasegpt/retrieval_eval.py`.
+
+These numbers are a regression check on a dated sample corpus, not live inventory and not a published IR benchmark. Refreshing `data/seattle_rentals.jsonl` can invalidate gold ids; update the gold file and re-run the gate after a snapshot change.
+
 ## Roadmap
 
-Retrieval evaluation is in progress. The next phase is an evaluation layer over the retriever (grounded listing queries, ranking metrics, and regression checks) before changing generation.
+Retrieval evaluation is in place (gold queries, ranking metrics, and a regression gate). Next is generation-side eval over the same snapshot, still without treating this as live inventory.
 
 ## License
 
