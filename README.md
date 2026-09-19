@@ -95,7 +95,7 @@ uv run python scripts/eval_retrieval.py
 
 The unittest target checks gold-file integrity and ranking math (no embeddings). The script is the release gate: it builds or loads the same in-memory/on-disk index the app uses, reports hit@k / MRR / precision@k / recall@k, and exits non-zero if hit@4, MRR, or chunk-to-listing matching fall below fixed floors in `leasegpt/retrieval_eval.py`.
 
-These numbers are a regression check on a dated sample corpus, not live inventory and not a published IR benchmark. Refreshing `data/seattle_rentals.jsonl` can invalidate gold ids; update the gold file and re-run the gate after a snapshot change.
+Hit@k and MRR are the gate metrics. Precision@4 stays low when a query has one gold listing and the retriever returns four chunks — that is expected, not a quality claim. These numbers are a regression check on a dated sample corpus, not live inventory and not a published IR benchmark. Refreshing `data/seattle_rentals.jsonl` can invalidate gold ids; update the gold file and re-run the gate after a snapshot change.
 
 ## Roadmap
 

@@ -123,7 +123,7 @@ class MetricsTests(unittest.TestCase):
         self.assertEqual(
             check_thresholds(
                 report,
-                {"n_queries": 2, "hit_at_4": 0.85, "mrr": 0.70, "matched_source_rate": 0.95},
+                {"n_queries": 2, "hit_at_4": 0.90, "mrr": 0.70, "matched_source_rate": 0.95},
             ),
             [],
         )

@@ -20,8 +20,8 @@ EVAL_K = 10
 # checks, not published IR benchmarks.
 DEFAULT_THRESHOLDS = {
     "n_queries": 12,
-    "hit_at_4": 0.85,
-    "mrr": 0.70,
+    "hit_at_4": 0.90,
+    "mrr": 0.80,
     "matched_source_rate": 0.95,
 }
 
@@ -321,7 +321,8 @@ def format_report(report: EvalReport, failures: Sequence[str] | None = None) -> 
             "PASS  "
             f"hit@4>={DEFAULT_THRESHOLDS['hit_at_4']:.2f}  "
             f"MRR>={DEFAULT_THRESHOLDS['mrr']:.2f}  "
-            f"n>={DEFAULT_THRESHOLDS['n_queries']}"
+            f"n>={DEFAULT_THRESHOLDS['n_queries']}  "
+            f"matched>={DEFAULT_THRESHOLDS['matched_source_rate']:.2f}"
         )
     lines.append(
         "Note: scores are a regression check on a dated Seattle sample, "
