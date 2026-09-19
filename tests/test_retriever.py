@@ -142,11 +142,13 @@ class InMemoryIndexTests(unittest.TestCase):
                 break
         self.assertEqual(len(by_name), 3)
         texts = [item.raw for item in by_name.values()]
+        target = by_name["U-District"]
         store = FAISS.from_texts(texts, embedding=HashEmbeddings())
-        sources = retrieve_sources(store, "Neighborhood: U-District", k=1)
+        # Query with the indexed document itself so hash embeddings are exact.
+        sources = retrieve_sources(store, target.raw, k=1)
         self.assertEqual(len(sources), 1)
         self.assertEqual(sources[0]["neighborhood"], "U-District")
-        self.assertEqual(sources[0]["title"], by_name["U-District"].title)
+        self.assertEqual(sources[0]["title"], target.title)
 
 
 class IndexStampTests(unittest.TestCase):
