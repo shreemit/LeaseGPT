@@ -77,7 +77,7 @@ FastEmbed/ONNX embedding checks are gated. The default command skips them so CI 
 LEASEGPT_TEST_FASTEMBED=1 uv run python -m unittest tests.test_retriever.FastEmbedGatedTests -v
 ```
 
-Retrieval ranking evaluation is still a later phase; this is unit coverage of listing/retriever helpers only.
+This is unit coverage of listing/retriever helpers only. For retrieval ranking and faithfulness reports, see [Evaluation](#evaluation).
 
 ## Hosting
 
@@ -102,9 +102,24 @@ The first boot downloads FastEmbed ONNX weights. Later cold starts after sleep a
 
 If you do not want Hugging Face Pro, deploy from GitHub at [share.streamlit.io](https://share.streamlit.io): pick this repo, `app.py`, and set `GROQ_API_KEY` in the app secrets. Community Cloud installs from `requirements.txt`.
 
-## Roadmap
+## Evaluation
 
-Retrieval evaluation is in progress. The next phase is an evaluation layer over the retriever (grounded listing queries, ranking metrics, and regression checks) before changing generation.
+LeaseGPT includes a repeatable evaluation layer over 25 snapshot-grounded
+queries. It reports retrieval precision/recall at 3, 5, and 10 for the current
+dense retriever and an eval-only constraint re-ranker. With `GROQ_API_KEY`, it
+also uses a separate rubric-driven LLM judge to score answer faithfulness and
+relevance.
+
+```sh
+uv run python -m eval.run_eval
+uv run python -m eval.run_eval --skip-llm
+```
+
+See the checked-in methodology and findings in
+[`eval/results.md`](eval/results.md), or open the self-contained
+[`eval/results.html`](eval/results.html) dashboard directly in a browser. Both
+are generated from the same `eval/results.json` artifact; viewing them does not
+run evaluation or modify the app's index.
 
 ## License
 

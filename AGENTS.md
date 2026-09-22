@@ -12,6 +12,7 @@ Python **3.10** is required (`faiss-cpu==1.7.3` has no 3.13 wheels). Use [uv](ht
 uv sync
 uv run streamlit run app.py
 uv run python -m unittest discover -s tests -t . -v
+uv run python -m eval.run_eval --skip-llm
 ```
 
 - Chat needs a Groq key ([console.groq.com](https://console.groq.com)): sidebar field, or `GROQ_API_KEY` in a gitignored `.env`. Hosted deploys use a Space / Community Cloud secret.
@@ -19,13 +20,13 @@ uv run python -m unittest discover -s tests -t . -v
 - Refresh listings only via `uv run python scripts/fetch_rentcast_listings.py` with `RENTCAST_API_KEY` in the environment or a gitignored `.env` at the repo root or `leasegpt/.env`. Never import that script from the app.
 - Firefox/geckodriver: only if you run `leasegpt/scraper.py`. The app must not import the scraper (it launches Firefox at import time).
 
-There is no dedicated test runner package. Offline unit tests (snapshot listings, retriever helpers, import guards) use stdlib `unittest` and need no API keys:
+There is no dedicated test runner package. Offline unit tests (snapshot listings, retriever helpers, import guards, eval metrics) use stdlib `unittest` and need no API keys:
 
 ```sh
 uv run python -m unittest discover -s tests -t . -v
 ```
 
-Listing/filter/import-guard tests always run. Retriever tests use a stub or tiny hash-embedding FAISS index by default. FastEmbed/ONNX checks are skipped unless `LEASEGPT_TEST_FASTEMBED=1` (first run may download `BAAI/bge-small-en-v1.5`). Retrieval evaluation is a separate phase — do not treat this suite as a ranking harness.
+Listing/filter/import-guard tests always run. Retriever tests use a stub or tiny hash-embedding FAISS index by default. FastEmbed/ONNX checks are skipped unless `LEASEGPT_TEST_FASTEMBED=1` (first run may download `BAAI/bge-small-en-v1.5`). Ranking and faithfulness reports live under `eval/` (`uv run python -m eval.run_eval`); do not treat the unit suite as a substitute for that harness.
 
 ## Layout
 
@@ -42,6 +43,7 @@ Listing/filter/import-guard tests always run. Retriever tests use a stub or tiny
 | `leasegpt/groq_chat.py` | LangChain 0.0.181 `SimpleChatModel` over the Groq SDK (`openai/gpt-oss-20b`) |
 | `leasegpt/ui.py` | CSS, sidebar (key only), Chat empty/composer, Sources panel, Listings filters |
 | `leasegpt/scraper.py` | Standalone Selenium Craigslist script; **do not import from the app** |
+| `eval/` | Offline RAG dataset, retrieval metrics/config comparison, LLM judge, Markdown report, and static HTML dashboard |
 | `tests/` | Offline `unittest` coverage for listings, retriever helpers, and import guards |
 | `Dockerfile` / `requirements.txt` | Hugging Face Spaces (Docker) and Streamlit Community Cloud |
 | `pyproject.toml` / `uv.lock` | Local uv pins — keep `requirements.txt` in sync when deps change |
