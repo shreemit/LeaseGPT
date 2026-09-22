@@ -61,6 +61,24 @@ The vector index is local FastEmbed + FAISS. After a listing refresh, rebuild it
 
 Firefox/geckodriver is only required if you run `leasegpt/scraper.py` yourself.
 
+## Tests
+
+No extra test runner package. From the repo root, after `uv sync`:
+
+```sh
+uv run python -m unittest discover -s tests -t . -v
+```
+
+That suite is offline: it loads the checked-in Seattle snapshot, filters listings, checks retriever chunking / `retrieve_sources` on a tiny in-memory index, and statically asserts app modules do not import `leasegpt.scraper` or `scripts/fetch_rentcast_listings.py`. It does not need Groq, RentCast, or network.
+
+FastEmbed/ONNX embedding checks are gated. The default command skips them so CI stays fast. To run the optional embed:
+
+```sh
+LEASEGPT_TEST_FASTEMBED=1 uv run python -m unittest tests.test_retriever.FastEmbedGatedTests -v
+```
+
+This is unit coverage of listing/retriever helpers only. For retrieval ranking and faithfulness reports, see [Evaluation](#evaluation).
+
 ## Hosting
 
 This is a Streamlit Python server. **GitHub Pages cannot host it** (static files only).
