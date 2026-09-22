@@ -1,0 +1,1906 @@
+{
+  "metadata": {
+    "generated_at": "2026-09-12T22:49:56.919077+00:00",
+    "snapshot_fetched_at": "2026-09-12",
+    "snapshot_digest": "099d05411c0be87e8a4428605a4843f11b0ad9da22f43dcd010d5fb89c4c3e66",
+    "embedding_model": "BAAI/bge-small-en-v1.5",
+    "query_count": 25,
+    "ks": [
+      3,
+      5,
+      10
+    ],
+    "configs": [
+      "baseline",
+      "constraint_rerank"
+    ],
+    "rerank_pool_size": 25,
+    "judge_model": "openai/gpt-oss-20b",
+    "judge_status": "ran"
+  },
+  "rubric": "Faithfulness (support from retrieved listings):\n5 = Every factual claim is directly supported; no unsupported details.\n4 = Grounded overall, with one minor unsupported or imprecise detail.\n3 = Mostly grounded, but contains a meaningful unsupported claim or omission.\n2 = Several claims are unsupported or conflict with the retrieved listings.\n1 = Mostly fabricated, contradicted, or not based on the retrieved listings.\n\nRelevance (answering the user's request):\n5 = Directly answers the request and addresses all material constraints.\n4 = Answers the request but misses one minor constraint or useful detail.\n3 = Partially answers; one important constraint is ignored.\n2 = Only loosely related to the request.\n1 = Off-topic or fails to answer the request.",
+  "retrieval_summary": {
+    "baseline": {
+      "query_count": 25,
+      "labeled_query_count": 22,
+      "recall@3": 0.07196969696969696,
+      "precision@3": 0.0909090909090909,
+      "recall@5": 0.08712121212121211,
+      "precision@5": 0.06363636363636364,
+      "recall@10": 0.19318181818181818,
+      "precision@10": 0.06818181818181818
+    },
+    "constraint_rerank": {
+      "query_count": 25,
+      "labeled_query_count": 22,
+      "recall@3": 0.26136363636363635,
+      "precision@3": 0.31818181818181823,
+      "recall@5": 0.3977272727272727,
+      "precision@5": 0.30000000000000004,
+      "recall@10": 0.42045454545454547,
+      "precision@10": 0.15909090909090914
+    }
+  },
+  "retrieval_queries": [
+    {
+      "id": "q01",
+      "query": "Studio under $1,800 in Capitol Hill",
+      "notes": "Four lowest-priced snapshot studios in Capitol Hill at or below $1,800.",
+      "relevant_ids": [
+        "227-Boylston-Ave-E,-Seattle,-WA-98102",
+        "215-13th-Ave-E,-Seattle,-WA-98102",
+        "420-Belmont-Ave-E,-Apt-2,-Seattle,-WA-98102",
+        "420-Belmont-Ave-E,-Seattle,-WA-98102"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "215-13th-Ave-E,-Seattle,-WA-98102",
+            "406-Summit-Ave-E,-Seattle,-WA-98102",
+            "120-10th-Ave-E,-Seattle,-WA-98102",
+            "2919-Franklin-Ave-E,-Apt-1E,-Seattle,-WA-98102",
+            "222-Summit-Ave-E,-Seattle,-WA-98102",
+            "745-Summit-Ave-E,-Apt-206,-Seattle,-WA-98102",
+            "331-Bellevue-Ave-E,-Seattle,-WA-98102",
+            "3150-Fairview-Ave-E,-Apt-513,-Seattle,-WA-98102",
+            "3150-Fairview-Ave-E,-Apt-419,-Seattle,-WA-98102",
+            "3150-Fairview-Ave-E,-Apt-319,-Seattle,-WA-98102"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.25,
+          "precision@3": 0.3333333333333333,
+          "hits@3": 1,
+          "recall@5": 0.25,
+          "precision@5": 0.2,
+          "hits@5": 1,
+          "recall@10": 0.25,
+          "precision@10": 0.1,
+          "hits@10": 1
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "215-13th-Ave-E,-Seattle,-WA-98102",
+            "406-Summit-Ave-E,-Seattle,-WA-98102",
+            "120-10th-Ave-E,-Seattle,-WA-98102",
+            "2919-Franklin-Ave-E,-Apt-1E,-Seattle,-WA-98102",
+            "222-Summit-Ave-E,-Seattle,-WA-98102",
+            "745-Summit-Ave-E,-Apt-206,-Seattle,-WA-98102",
+            "331-Bellevue-Ave-E,-Seattle,-WA-98102",
+            "3150-Fairview-Ave-E,-Apt-513,-Seattle,-WA-98102",
+            "3150-Fairview-Ave-E,-Apt-419,-Seattle,-WA-98102",
+            "3150-Fairview-Ave-E,-Apt-319,-Seattle,-WA-98102"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.25,
+          "precision@3": 0.3333333333333333,
+          "hits@3": 1,
+          "recall@5": 0.25,
+          "precision@5": 0.2,
+          "hits@5": 1,
+          "recall@10": 0.25,
+          "precision@10": 0.1,
+          "hits@10": 1
+        }
+      }
+    },
+    {
+      "id": "q02",
+      "query": "1 bedroom under $2,100 in Ballard",
+      "notes": "Four lowest-priced one-bedroom Ballard listings at or below $2,100.",
+      "relevant_ids": [
+        "5200-17th-Ave-NW,-Seattle,-WA-98107",
+        "6201-14th-Ave-NW,-Apt-103,-Seattle,-WA-98107",
+        "2250-Nw-58th-St,-Unit-101,-Seattle,-WA-98107",
+        "8513-5-16th-Ave-NW,-Seattle,-WA-98117"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "5117-2nd-Ave-NW,-Seattle,-WA-98107",
+            "2250-Nw-58th-St,-Unit-101,-Seattle,-WA-98107",
+            "6110-24th-Ave-NW,-Apt-104,-Seattle,-WA-98107",
+            "1401-Nw-90th-St,-Seattle,-WA-98117",
+            "7549-32nd-Ave-NW,-Unit-1299302P,-Seattle,-WA-98117",
+            "1531-Nw-61st-St,-Apt-204,-Seattle,-WA-98107",
+            "1540-Nw-52nd-St,-Apt-2,-Seattle,-WA-98107",
+            "6201-14th-Ave-NW,-Apt-103,-Seattle,-WA-98107",
+            "1742-Nw-58th-St,-Apt-100,-Seattle,-WA-98107",
+            "3005-Nw-92nd-St,-Unit-1299297P,-Seattle,-WA-98117"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.25,
+          "precision@3": 0.3333333333333333,
+          "hits@3": 1,
+          "recall@5": 0.25,
+          "precision@5": 0.2,
+          "hits@5": 1,
+          "recall@10": 0.5,
+          "precision@10": 0.2,
+          "hits@10": 2
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "2250-Nw-58th-St,-Unit-101,-Seattle,-WA-98107",
+            "1531-Nw-61st-St,-Apt-204,-Seattle,-WA-98107",
+            "1540-Nw-52nd-St,-Apt-2,-Seattle,-WA-98107",
+            "6201-14th-Ave-NW,-Apt-103,-Seattle,-WA-98107",
+            "1742-Nw-58th-St,-Apt-100,-Seattle,-WA-98107",
+            "1530-Nw-52nd-St,-Apt-204,-Seattle,-WA-98107",
+            "1530-Nw-Market-St,-Unit-209,-Seattle,-WA-98107",
+            "1401-Nw-90th-St,-Seattle,-WA-98117",
+            "121-12th-Ave-E,-Unit-102,-Seattle,-WA-98102",
+            "9244-Greenwood-Ave-N,-Apt-2,-Seattle,-WA-98103"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.25,
+          "precision@3": 0.3333333333333333,
+          "hits@3": 1,
+          "recall@5": 0.5,
+          "precision@5": 0.4,
+          "hits@5": 2,
+          "recall@10": 0.5,
+          "precision@10": 0.2,
+          "hits@10": 2
+        }
+      }
+    },
+    {
+      "id": "q03",
+      "query": "2 bedroom under $2,800 in Fremont/Wallingford",
+      "notes": "Four lowest-priced two-bedroom 98103 listings at or below $2,800.",
+      "relevant_ids": [
+        "1125-N-93rd-St,-Apt-6,-Seattle,-WA-98103",
+        "512-N-79th-St,-Unit-B,-Seattle,-WA-98103",
+        "407-N-87th-St,-Seattle,-WA-98103",
+        "8411-Linden-Ave-N,-Apt-4,-Seattle,-WA-98103"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "9545-Wallingford-Ave-N,-Seattle,-WA-98103",
+            "7121-Linden-Ave-N,-Apt-204,-Seattle,-WA-98103",
+            "4512-Fremont-Ave-N,-Apt-1,-Seattle,-WA-98103",
+            "4425-Fremont-Ave-N-Unit-B,-Seattle,-WA-98103",
+            "9244-Greenwood-Ave-N,-Apt-2,-Seattle,-WA-98103",
+            "4512-Fremont-Ave-N,-Apt-6,-Seattle,-WA-98103",
+            "8203-Wallingford-Ave-N,-Seattle,-WA-98103",
+            "121-N-46th-St,-Apt-101,-Seattle,-WA-98103",
+            "1400-N-80th-St,-Seattle,-WA-98103",
+            "949-N-80th-St,-Apt-102,-Seattle,-WA-98103"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.0,
+          "precision@10": 0.0,
+          "hits@10": 0
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "512-N-79th-St,-Unit-B,-Seattle,-WA-98103",
+            "407-N-87th-St,-Seattle,-WA-98103",
+            "517-N-97th-St,-Seattle,-WA-98103",
+            "1124-N-92nd-St,-Apt-205,-Seattle,-WA-98103",
+            "9545-Wallingford-Ave-N,-Seattle,-WA-98103",
+            "106-N-36th-St,-Seattle,-WA-98103",
+            "3600-Palatine-Ave-N,-Unit-706,-Seattle,-WA-98103",
+            "7121-Linden-Ave-N,-Apt-204,-Seattle,-WA-98103",
+            "4512-Fremont-Ave-N,-Apt-1,-Seattle,-WA-98103",
+            "9244-Greenwood-Ave-N,-Apt-2,-Seattle,-WA-98103"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.5,
+          "precision@3": 0.6666666666666666,
+          "hits@3": 2,
+          "recall@5": 0.5,
+          "precision@5": 0.4,
+          "hits@5": 2,
+          "recall@10": 0.5,
+          "precision@10": 0.2,
+          "hits@10": 2
+        }
+      }
+    },
+    {
+      "id": "q04",
+      "query": "2 bedroom under $2,600 in West Seattle",
+      "notes": "Four lowest-priced two-bedroom West Seattle listings at or below $2,600.",
+      "relevant_ids": [
+        "4821-Fauntleroy-Way-SW,-Seattle,-WA-98116",
+        "5656-California-Ave-SW,-Seattle,-WA-98136",
+        "3233-Sw-Avalon-Way,-Seattle,-WA-98126",
+        "4523-Sw-Stevens-St,-Unit-A,-Seattle,-WA-98116"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "9200-2nd-Ave-SW,-Seattle,-WA-98106",
+            "2713-Ne-94th-St,-Unit-2,-Seattle,-WA-98115",
+            "5117-2nd-Ave-NW,-Seattle,-WA-98107",
+            "521-2nd-Ave-W,-Seattle,-WA-98119",
+            "4832-1-2-California-Ave-SW,-Seattle,-WA-98116",
+            "1414-10th-Ave,-Unit-960,-Seattle,-WA-98122",
+            "1540-Nw-52nd-St,-Apt-2,-Seattle,-WA-98107",
+            "200-Ne-65th-St,---B02,-Seattle,-WA-98115",
+            "200-2nd-Ave-W,-Seattle,-WA-98119",
+            "6520-35th-Ave-SW,-Seattle,-WA-98126"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.0,
+          "precision@10": 0.0,
+          "hits@10": 0
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "5117-2nd-Ave-NW,-Seattle,-WA-98107",
+            "4832-1-2-California-Ave-SW,-Seattle,-WA-98116",
+            "6520-35th-Ave-SW,-Seattle,-WA-98126",
+            "4022-59th-Ave-SW,-Seattle,-WA-98116",
+            "4540-45th-Ave-SW,-Apt-402,-Seattle,-WA-98116",
+            "3084-Sw-Avalon-Way,-Apt-702,-Seattle,-WA-98126",
+            "2416-54th-Pl-SW,-Unit-23,-Seattle,-WA-98116",
+            "6110-24th-Ave-NW,-Apt-104,-Seattle,-WA-98107",
+            "2405-Nw-65th-St,-Apt-205,-Seattle,-WA-98117",
+            "4300-Sw-Seattle-St,-Seattle,-WA-98116"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.0,
+          "precision@10": 0.0,
+          "hits@10": 0
+        }
+      }
+    },
+    {
+      "id": "q05",
+      "query": "3 bedroom under $3,500 in Rainier Valley",
+      "notes": "Four lowest-priced three-bedroom Rainier Valley listings at or below $3,500.",
+      "relevant_ids": [
+        "3305-S-Juneau-St,-Seattle,-WA-98118",
+        "4246-S-Greenbelt-Station-Dr,-Seattle,-WA-98118",
+        "8700-42nd-Ave-S,-Seattle,-WA-98118",
+        "5710-S-Norfolk-St,-Seattle,-WA-98118"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "6526-Rainier-Ave-S,-Apt-3,-Seattle,-WA-98118",
+            "3924-S-Brandon-St,-Unit-A,-Seattle,-WA-98118",
+            "4029-Rainier-Ave-S,-Apt-206,-Seattle,-WA-98118",
+            "4029-Rainier-Ave-S,-Apt-307,-Seattle,-WA-98118",
+            "9123-50th-Ave-S-Unit-A,-Seattle,-WA-98118",
+            "9750-Rainier-Ave-S,-Seattle,-WA-98118",
+            "4029-Rainier-Ave-S,-Apt-305,-Seattle,-WA-98118",
+            "3305-S-Juneau-St,-Seattle,-WA-98118",
+            "4781-35th-Ave-S-Unit-C,-Seattle,-WA-98118",
+            "5956-36th-Ave-S-Unit-D,-Seattle,-WA-98118"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.25,
+          "precision@10": 0.1,
+          "hits@10": 1
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "3924-S-Brandon-St,-Unit-A,-Seattle,-WA-98118",
+            "3305-S-Juneau-St,-Seattle,-WA-98118",
+            "8700-42nd-Ave-S,-Seattle,-WA-98118",
+            "5710-S-Norfolk-St,-Seattle,-WA-98118",
+            "9750-Rainier-Ave-S,-Seattle,-WA-98118",
+            "9747-61st-Ave-S,-Seattle,-WA-98118",
+            "6526-Rainier-Ave-S,-Apt-3,-Seattle,-WA-98118",
+            "4029-Rainier-Ave-S,-Apt-206,-Seattle,-WA-98118",
+            "4029-Rainier-Ave-S,-Apt-307,-Seattle,-WA-98118",
+            "9123-50th-Ave-S-Unit-A,-Seattle,-WA-98118"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.5,
+          "precision@3": 0.6666666666666666,
+          "hits@3": 2,
+          "recall@5": 0.75,
+          "precision@5": 0.6,
+          "hits@5": 3,
+          "recall@10": 0.75,
+          "precision@10": 0.3,
+          "hits@10": 3
+        }
+      }
+    },
+    {
+      "id": "q06",
+      "query": "Studio under $1,700 in the U-District",
+      "notes": "Four lowest-priced U-District studios at or below $1,700.",
+      "relevant_ids": [
+        "4528-20th-Ave-NE,-Seattle,-WA-98105",
+        "4733-21st-Ave-NE,-Seattle,-WA-98105",
+        "407-Ne-45th-St,---0,-Seattle,-WA-98105",
+        "5608-15th-Ave-NE,-Apt-205,-Seattle,-WA-98105"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "5035-15th-Ave-NE,-Seattle,-WA-98105",
+            "5625-15th-Ave-NE,-Seattle,-WA-98105",
+            "5608-15th-Ave-NE,-Apt-205,-Seattle,-WA-98105",
+            "4757-Thackeray-Pl-NE,-Unit-3,-Seattle,-WA-98105",
+            "4229-7th-Ave-NE,-Seattle,-WA-98105",
+            "5608-15th-Ave-NE,-Apt-309,-Seattle,-WA-98105",
+            "4315-7th-Ave-NE,-Seattle,-WA-98105",
+            "5020-15th-Ave-NE,-Seattle,-WA-98105",
+            "5042-21st-Ave-NE,-Unit-50405,-Seattle,-WA-98105",
+            "1821-13th-Ave,-Unit-403,-Seattle,-WA-98122"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.25,
+          "precision@3": 0.3333333333333333,
+          "hits@3": 1,
+          "recall@5": 0.25,
+          "precision@5": 0.2,
+          "hits@5": 1,
+          "recall@10": 0.25,
+          "precision@10": 0.1,
+          "hits@10": 1
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "5035-15th-Ave-NE,-Seattle,-WA-98105",
+            "5625-15th-Ave-NE,-Seattle,-WA-98105",
+            "5608-15th-Ave-NE,-Apt-205,-Seattle,-WA-98105",
+            "4757-Thackeray-Pl-NE,-Unit-3,-Seattle,-WA-98105",
+            "4229-7th-Ave-NE,-Seattle,-WA-98105",
+            "5608-15th-Ave-NE,-Apt-309,-Seattle,-WA-98105",
+            "4315-7th-Ave-NE,-Seattle,-WA-98105",
+            "5020-15th-Ave-NE,-Seattle,-WA-98105",
+            "5042-21st-Ave-NE,-Unit-50405,-Seattle,-WA-98105",
+            "4235-Brooklyn-Ave-NE,-Apt-201,-Seattle,-WA-98105"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.25,
+          "precision@3": 0.3333333333333333,
+          "hits@3": 1,
+          "recall@5": 0.25,
+          "precision@5": 0.2,
+          "hits@5": 1,
+          "recall@10": 0.25,
+          "precision@10": 0.1,
+          "hits@10": 1
+        }
+      }
+    },
+    {
+      "id": "q07",
+      "query": "1 bedroom under $2,000 in Northgate",
+      "notes": "Four lowest-priced one-bedroom Northgate listings at or below $2,000.",
+      "relevant_ids": [
+        "14019-32nd-Ave-NE,-Apt-26,-Seattle,-WA-98125",
+        "11527-28th-Ave-NE,-Apt-204,-Seattle,-WA-98125",
+        "11314-25th-Ave-NE,-Seattle,-WA-98125",
+        "3018-Ne-137th-St,-Apt-3,-Seattle,-WA-98125"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "14314-32nd-Ave-NE,-Seattle,-WA-98125",
+            "10519-10523-24th-Ave-NE,-Seattle,-WA-98125",
+            "3201-Ne-120th-St,-Seattle,-WA-98125",
+            "11300-5th-Ave-NE,-Apt-2,-Seattle,-WA-98125",
+            "14033-32nd-Ave-NE,-Seattle,-WA-98125",
+            "1227-Ne-143rd-St,-Seattle,-WA-98125",
+            "11314-25th-Ave-NE,-Seattle,-WA-98125",
+            "12544-15th-Ave-NE,-Apt-314,-Seattle,-WA-98125",
+            "12000-15th-Ave-NE,-Seattle,-WA-98125",
+            "13341-15th-Ave-NE,-Seattle,-WA-98125"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.25,
+          "precision@10": 0.1,
+          "hits@10": 1
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "14314-32nd-Ave-NE,-Seattle,-WA-98125",
+            "3201-Ne-120th-St,-Seattle,-WA-98125",
+            "14033-32nd-Ave-NE,-Seattle,-WA-98125",
+            "1227-Ne-143rd-St,-Seattle,-WA-98125",
+            "11314-25th-Ave-NE,-Seattle,-WA-98125",
+            "12544-15th-Ave-NE,-Apt-314,-Seattle,-WA-98125",
+            "12000-15th-Ave-NE,-Seattle,-WA-98125",
+            "13341-15th-Ave-NE,-Seattle,-WA-98125",
+            "14019-32nd-Ave-NE,-Apt-26,-Seattle,-WA-98125",
+            "14019-32nd-Ave-NE,-Apt-43,-Seattle,-WA-98125"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.25,
+          "precision@5": 0.2,
+          "hits@5": 1,
+          "recall@10": 0.5,
+          "precision@10": 0.2,
+          "hits@10": 2
+        }
+      }
+    },
+    {
+      "id": "q08",
+      "query": "2 bedroom under $3,000 in Queen Anne",
+      "notes": "Four lowest-priced two-bedroom Queen Anne listings at or below $3,000.",
+      "relevant_ids": [
+        "627-W-Mercer-Pl,-Apt-1,-Seattle,-WA-98119",
+        "2005-13th-Ave-W,-Apt-203,-Seattle,-WA-98119",
+        "2005-13th-Ave-W,-Seattle,-WA-98119",
+        "3626-14th-Ave-W,-Apt-102,-Seattle,-WA-98119"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "330-3rd-Ave-W,-Seattle,-WA-98119",
+            "617-3rd-Ave-W,-Seattle,-WA-98119",
+            "200-2nd-Ave-W,-Seattle,-WA-98119",
+            "521-2nd-Ave-W,-Seattle,-WA-98119",
+            "3232-15th-Ave-W,-Apt-403,-Seattle,-WA-98119",
+            "2530-15th-Ave-W,-Apt-410,-Seattle,-WA-98119",
+            "3036-16th-Ave-W,-Apt-102,-Seattle,-WA-98119",
+            "3036-16th-Ave-W,-Apt-227,-Seattle,-WA-98119",
+            "1001-W-Howe-St,-Apt-A2,-Seattle,-WA-98119",
+            "2222-15th-Ave-W,-Unit-936,-Seattle,-WA-98119"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.0,
+          "precision@10": 0.0,
+          "hits@10": 0
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "3232-15th-Ave-W,-Apt-403,-Seattle,-WA-98119",
+            "2530-15th-Ave-W,-Apt-410,-Seattle,-WA-98119",
+            "1001-W-Howe-St,-Apt-A2,-Seattle,-WA-98119",
+            "627-W-Mercer-Pl,-Apt-1,-Seattle,-WA-98119",
+            "524-5th-Ave-W,---100-404,-Seattle,-WA-98119",
+            "2215-14th-Ave-W,-Apt-1,-Seattle,-WA-98119",
+            "200-2nd-Ave-W,-Seattle,-WA-98119",
+            "330-3rd-Ave-W,-Seattle,-WA-98119",
+            "617-3rd-Ave-W,-Seattle,-WA-98119",
+            "521-2nd-Ave-W,-Seattle,-WA-98119"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.25,
+          "precision@5": 0.2,
+          "hits@5": 1,
+          "recall@10": 0.25,
+          "precision@10": 0.1,
+          "hits@10": 1
+        }
+      }
+    },
+    {
+      "id": "q09",
+      "query": "1 bedroom under $2,300 in South Lake Union",
+      "notes": "Four lowest-priced one-bedroom 98109 listings at or below $2,300.",
+      "relevant_ids": [
+        "502-Minor-Ave-N,-Seattle,-WA-98109",
+        "915-Queen-Anne-Ave-N,-Seattle,-WA-98109",
+        "1206-Queen-Anne-Ave-N,-Seattle,-WA-98109",
+        "2484-Dexter-Ave-N,-Apt-4,-Seattle,-WA-98109"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "711-2nd-Ave-N,-Seattle,-WA-98109",
+            "513-1st-Ave-N,-Unit-711,-Seattle,-WA-98109",
+            "513-1st-Ave-N,-Unit-704,-Seattle,-WA-98109",
+            "513-1st-Ave-N,-Unit-807,-Seattle,-WA-98109",
+            "513-1st-Ave-N,-Unit-320,-Seattle,-WA-98109",
+            "513-1st-Ave-N,-Unit-317,-Seattle,-WA-98109",
+            "513-1st-Ave-N,-Unit-214,-Seattle,-WA-98109",
+            "219-1st-Ave-N,-Apt-401,-Seattle,-WA-98109",
+            "513-1st-Ave-N,-Unit-206,-Seattle,-WA-98109",
+            "513-1st-Ave-N,-Unit-811,-Seattle,-WA-98109"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.0,
+          "precision@10": 0.0,
+          "hits@10": 0
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "711-2nd-Ave-N,-Seattle,-WA-98109",
+            "219-1st-Ave-N,-Apt-401,-Seattle,-WA-98109",
+            "1105-5th-Ave-N,-Seattle,-WA-98109",
+            "502-Minor-Ave-N,-Seattle,-WA-98109",
+            "718-4th-Ave-N,-Seattle,-WA-98109",
+            "1800-Taylor-Ave-N,-Apt-101,-Seattle,-WA-98109",
+            "1259-Thomas-St,-Unit-607,-Seattle,-WA-98109",
+            "526-Yale-Ave-N,-Unit-1003,-Seattle,-WA-98109",
+            "513-1st-Ave-N,-Unit-320,-Seattle,-WA-98109",
+            "513-1st-Ave-N,-Unit-811,-Seattle,-WA-98109"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.25,
+          "precision@5": 0.2,
+          "hits@5": 1,
+          "recall@10": 0.25,
+          "precision@10": 0.1,
+          "hits@10": 1
+        }
+      }
+    },
+    {
+      "id": "q10",
+      "query": "2 bedroom under $3,200 in Capitol Hill",
+      "notes": "Four lowest-priced two-bedroom Capitol Hill listings at or below $3,200.",
+      "relevant_ids": [
+        "2210-Franklin-Ave-E,-Seattle,-WA-98102",
+        "224-Harvard-Ave-E,-Seattle,-WA-98102",
+        "3150-Fairview-Ave-E,---301MFTE,-Seattle,-WA-98102",
+        "321-Boylston-Ave-E,-Apt-206,-Seattle,-WA-98102"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "1029-Summit-Ave-E,-Apt-3,-Seattle,-WA-98102",
+            "745-Summit-Ave-E,-Apt-204,-Seattle,-WA-98102",
+            "2950-Fairview-Ave-E-Apt-C,-Seattle,-WA-98102",
+            "121-12th-Ave-E,-Unit-102,-Seattle,-WA-98102",
+            "210-10th-Ave-E,-Apt-201,-Seattle,-WA-98102",
+            "414-E-Mercer-St,-Apt-2,-Seattle,-WA-98102",
+            "103-13th-Ave-E,-Seattle,-WA-98102",
+            "2919-Franklin-Ave-E,-Apt-2F,-Seattle,-WA-98102",
+            "1321-E-John-St,-Apt-308,-Seattle,-WA-98102",
+            "421-10th-Ave-E-Apt-C,-Seattle,-WA-98102"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.0,
+          "precision@10": 0.0,
+          "hits@10": 0
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "745-Summit-Ave-E,-Apt-204,-Seattle,-WA-98102",
+            "210-10th-Ave-E,-Apt-201,-Seattle,-WA-98102",
+            "208-Boylston-Ave-E,-Apt-1,-Seattle,-WA-98102",
+            "2210-Franklin-Ave-E,-Seattle,-WA-98102",
+            "1029-Summit-Ave-E,-Apt-3,-Seattle,-WA-98102",
+            "3150-Fairview-Ave-E,-Apt-201,-Seattle,-WA-98102",
+            "2950-Fairview-Ave-E-Apt-C,-Seattle,-WA-98102",
+            "121-12th-Ave-E,-Unit-102,-Seattle,-WA-98102",
+            "414-E-Mercer-St,-Apt-2,-Seattle,-WA-98102",
+            "103-13th-Ave-E,-Seattle,-WA-98102"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.25,
+          "precision@5": 0.2,
+          "hits@5": 1,
+          "recall@10": 0.25,
+          "precision@10": 0.1,
+          "hits@10": 1
+        }
+      }
+    },
+    {
+      "id": "q11",
+      "query": "2 bedroom townhouse under $3,500",
+      "notes": "Four lowest-priced two-bedroom townhouses in the Seattle snapshot at or below $3,500.",
+      "relevant_ids": [
+        "14040B-Midvale-Ave-N,-Seattle,-WA-98133",
+        "6516-34th-Ave-Ne-Unit-B,-Seattle,-WA-98115",
+        "2420-Sw-Holden-St,-Apt-A,-Seattle,-WA-98106",
+        "4883-Terrace-Dr-NE,-Unit-A,-Seattle,-WA-98105"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "4061-Ne-50th-St,-Seattle,-WA-98105",
+            "1531-18th-Ave,-Seattle,-WA-98122",
+            "162A-15th-Ave,-Seattle,-WA-98122",
+            "1413-E-Yesler-Way,-Unit-C,-Seattle,-WA-98122",
+            "100-26th-Ave---A,-Seattle,-WA-98122",
+            "3638-Ne-73rd-Pl,-Seattle,-WA-98115",
+            "9522-1st-Ave-NE,-Apt-A3,-Seattle,-WA-98115",
+            "13727-35th-Ave-Ne-Unit-C,-Seattle,-WA-98125",
+            "330-3rd-Ave-W,-Seattle,-WA-98119",
+            "2301-23rd-Ave-W,-Seattle,-WA-98199"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.0,
+          "precision@10": 0.0,
+          "hits@10": 0
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "4061-Ne-50th-St,-Seattle,-WA-98105",
+            "162A-15th-Ave,-Seattle,-WA-98122",
+            "3638-Ne-73rd-Pl,-Seattle,-WA-98115",
+            "9522-1st-Ave-NE,-Apt-A3,-Seattle,-WA-98115",
+            "7530-15th-Ave-Nw-Unit-D,-Seattle,-WA-98117",
+            "8833A-Midvale-Ave-N,-Seattle,-WA-98103",
+            "1029-Summit-Ave-E,-Apt-3,-Seattle,-WA-98102",
+            "1413-E-Yesler-Way,-Unit-C,-Seattle,-WA-98122",
+            "13727-35th-Ave-Ne-Unit-C,-Seattle,-WA-98125",
+            "8510-Midvale-Ave-N-Unit-B,-Seattle,-WA-98103"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.0,
+          "precision@10": 0.0,
+          "hits@10": 0
+        }
+      }
+    },
+    {
+      "id": "q12",
+      "query": "1 bedroom condo under $2,500 in Downtown",
+      "notes": "All one-bedroom Downtown condos at or below $2,500.",
+      "relevant_ids": [
+        "98-Union-St,-Apt-610,-Seattle,-WA-98101",
+        "1200-Boylston-Ave,-Apt-703,-Seattle,-WA-98101"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "1808-Minor-Ave,-Unit-A2308,-Seattle,-WA-98101",
+            "1902-2nd-Ave,-Seattle,-WA-98101",
+            "300-10th-Ave,-Unit-B101,-Seattle,-WA-98122",
+            "13727-35th-Ave-Ne-Unit-C,-Seattle,-WA-98125",
+            "1440-Nw-60th-St,-Apt-1,-Seattle,-WA-98107",
+            "1810-43rd-Ave-E,-Unit-B202,-Seattle,-WA-98112",
+            "9520-1st-Ave-NE,-Apt-A302,-Seattle,-WA-98115",
+            "1415-2nd-Ave,-Unit-979,-Seattle,-WA-98101",
+            "1410-E-Pine-St,-Unit-W208,-Seattle,-WA-98122",
+            "2650-14th-Ave-W,-Seattle,-WA-98119"
+          ],
+          "relevant_count": 2,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.0,
+          "precision@10": 0.0,
+          "hits@10": 0
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "124-Bellevue-Ave-E,-Unit-303,-Seattle,-WA-98102",
+            "800-Columbia-St,-Unit-702,-Seattle,-WA-98104",
+            "121-12th-Ave-E,-Unit-102,-Seattle,-WA-98102",
+            "9244-Greenwood-Ave-N,-Apt-2,-Seattle,-WA-98103",
+            "450-S-Main-St,-Unit-1605,-Seattle,-WA-98104",
+            "1902-2nd-Ave,-Seattle,-WA-98101",
+            "1808-Minor-Ave,-Unit-A2308,-Seattle,-WA-98101",
+            "1400-Hubbell-Pl,-Apt-901,-Seattle,-WA-98101",
+            "2415-2nd-Ave,-Apt-733,-Seattle,-WA-98121",
+            "9750-Rainier-Ave-S-Unit-B,-Seattle,-WA-98118"
+          ],
+          "relevant_count": 2,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.0,
+          "precision@10": 0.0,
+          "hits@10": 0
+        }
+      }
+    },
+    {
+      "id": "q13",
+      "query": "3 bedroom single family home under $4,000 in West Seattle",
+      "notes": "All three-bedroom single-family West Seattle listings at or below $4,000.",
+      "relevant_ids": [
+        "4507-Sw-Oregon-St,-Seattle,-WA-98116",
+        "2311-48th-Ave-SW,-Seattle,-WA-98116"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "9435-36th-Ave-SW,-Seattle,-WA-98126",
+            "8607-35th-Ave-SW,-Seattle,-WA-98126",
+            "823-Ne-70th-St,-Seattle,-WA-98115",
+            "5225-36th-Ave-SW,-Seattle,-WA-98126",
+            "2114-41st-Ave-SW,-Seattle,-WA-98116",
+            "4142C-3rd-Ave-NW,-Seattle,-WA-98107",
+            "6341-4th-Ave-NE,-Seattle,-WA-98115",
+            "120-S-108th-St,-Seattle,-WA-98168",
+            "4507-Sw-Oregon-St,-Seattle,-WA-98116",
+            "4110-44th-Ave-SW,-Seattle,-WA-98116"
+          ],
+          "relevant_count": 2,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.5,
+          "precision@10": 0.1,
+          "hits@10": 1
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "4507-Sw-Oregon-St,-Seattle,-WA-98116",
+            "9435-36th-Ave-SW,-Seattle,-WA-98126",
+            "2114-41st-Ave-SW,-Seattle,-WA-98116",
+            "3006-Sw-Hinds-St,-Seattle,-WA-98126",
+            "8607-35th-Ave-SW,-Seattle,-WA-98126",
+            "5225-36th-Ave-SW,-Seattle,-WA-98126",
+            "120-S-108th-St,-Seattle,-WA-98168",
+            "6513-31st-Ave-S,-Seattle,-WA-98108",
+            "7308-24th-Ave-NW,-Seattle,-WA-98117",
+            "2233-14th-Ave-W,-Apt-4,-Seattle,-WA-98119"
+          ],
+          "relevant_count": 2,
+          "recall@3": 0.5,
+          "precision@3": 0.3333333333333333,
+          "hits@3": 1,
+          "recall@5": 0.5,
+          "precision@5": 0.2,
+          "hits@5": 1,
+          "recall@10": 0.5,
+          "precision@10": 0.1,
+          "hits@10": 1
+        }
+      }
+    },
+    {
+      "id": "q14",
+      "query": "2 bedroom apartment under $2,600 in Bitter Lake",
+      "notes": "Four lowest-priced two-bedroom Bitter Lake apartments at or below $2,600.",
+      "relevant_ids": [
+        "13000-Linden-Ave-N,-Seattle,-WA-98133",
+        "916-N-143rd-St,-Seattle,-WA-98133",
+        "14002-Linden-Ave-N,-Seattle,-WA-98133",
+        "11501-Greenwood-Ave-N,-Seattle,-WA-98133"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "2312-N-134th-St,-Apt-6,-Seattle,-WA-98133",
+            "2230-N-106th-St,-Apt-307,-Seattle,-WA-98133",
+            "2230-N-106th-St,-Apt-101,-Seattle,-WA-98133",
+            "625-N-130th-St,-Seattle,-WA-98133",
+            "2230-N-106th-St,-Apt-105,-Seattle,-WA-98133",
+            "14002-Linden-Ave-N,-Seattle,-WA-98133",
+            "13000-Linden-Ave-N,-Seattle,-WA-98133",
+            "910-N-104th-St,-Unit-A102,-Seattle,-WA-98133",
+            "2150-N-135th-St,-Unit-B,-Seattle,-WA-98133",
+            "13739-Linden-Ave-N,-Seattle,-WA-98133"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.5,
+          "precision@10": 0.2,
+          "hits@10": 2
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "2312-N-134th-St,-Apt-6,-Seattle,-WA-98133",
+            "14002-Linden-Ave-N,-Seattle,-WA-98133",
+            "13000-Linden-Ave-N,-Seattle,-WA-98133",
+            "13739-Linden-Ave-N,-Seattle,-WA-98133",
+            "916-N-143rd-St,-Seattle,-WA-98133",
+            "10343-Midvale-Ave-N,-Seattle,-WA-98133",
+            "2150-N-135th-St,-Unit-B,-Seattle,-WA-98133",
+            "11560-Stone-Ave-N,-Apt-101,-Seattle,-WA-98133",
+            "11501-Greenwood-Ave-N,-Apt-101,-Seattle,-WA-98133",
+            "703-N-104th-St,-Unit-1299298P,-Seattle,-WA-98133"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.5,
+          "precision@3": 0.6666666666666666,
+          "hits@3": 2,
+          "recall@5": 0.75,
+          "precision@5": 0.6,
+          "hits@5": 3,
+          "recall@10": 0.75,
+          "precision@10": 0.3,
+          "hits@10": 3
+        }
+      }
+    },
+    {
+      "id": "q15",
+      "query": "4 bedroom under $4,500 in the U-District",
+      "notes": "All four-bedroom U-District listings at or below $4,500.",
+      "relevant_ids": [
+        "4707-Brooklyn-Ave-Ne-Apt-E,-Seattle,-WA-98105",
+        "5646-Brooklyn-Ave-NE,-Seattle,-WA-98105"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "3911-4th-Ave-Ne-Unit-D,-Seattle,-WA-98105",
+            "4728-4th-Ave-NE,-Unit-Upper,-Seattle,-WA-98105",
+            "2815-4th-Ave-W-Unit-C,-Seattle,-WA-98119",
+            "1421-4th-Ave-W,-Apt-202,-Seattle,-WA-98119",
+            "718-4th-Ave-N,-Seattle,-WA-98109",
+            "304-E-Thomas-St,-Unit-4,-Seattle,-WA-98102",
+            "650-Ne-42nd-St,-Apt-4,-Seattle,-WA-98105",
+            "4255-Gilman-Ave-W,-Apt-4,-Seattle,-WA-98199",
+            "2484-Dexter-Ave-N,-Apt-4,-Seattle,-WA-98109",
+            "5600-University-Way-NE,-Apt-12,-Seattle,-WA-98105"
+          ],
+          "relevant_count": 2,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.0,
+          "precision@10": 0.0,
+          "hits@10": 0
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "3911-4th-Ave-Ne-Unit-D,-Seattle,-WA-98105",
+            "4728-4th-Ave-NE,-Unit-Upper,-Seattle,-WA-98105",
+            "650-Ne-42nd-St,-Apt-4,-Seattle,-WA-98105",
+            "5600-University-Way-NE,-Apt-12,-Seattle,-WA-98105",
+            "4046-8th-Ave-NE,-Unit-B04,-Seattle,-WA-98105",
+            "3608-Ne-44th-St,-Unit-5,-Seattle,-WA-98105",
+            "5042-21st-Ave-NE,-Unit-50405,-Seattle,-WA-98105",
+            "5321-7th-Ave-NE,-Unit-Lower,-Seattle,-WA-98105",
+            "2815-4th-Ave-W-Unit-C,-Seattle,-WA-98119",
+            "1421-4th-Ave-W,-Apt-202,-Seattle,-WA-98119"
+          ],
+          "relevant_count": 2,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.0,
+          "precision@10": 0.0,
+          "hits@10": 0
+        }
+      }
+    },
+    {
+      "id": "q16",
+      "query": "2 bedroom under $2,800 in Ballard",
+      "notes": "Four lowest-priced two-bedroom Ballard listings at or below $2,800.",
+      "relevant_ids": [
+        "8732-14th-Ave-Nw-Unit-Btm,-Seattle,-WA-98117",
+        "1446-Nw-62nd-St,-Apt-101,-Seattle,-WA-98107",
+        "1440-Nw-60th-St,-Apt-1,-Seattle,-WA-98107",
+        "2405-Nw-65th-St,-Apt-205,-Seattle,-WA-98117"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "5117-2nd-Ave-NW,-Seattle,-WA-98107",
+            "912-Nw-56th-St,-Unit-713,-Seattle,-WA-98107",
+            "1540-Nw-52nd-St,-Apt-2,-Seattle,-WA-98107",
+            "9244-Greenwood-Ave-N,-Apt-2,-Seattle,-WA-98103",
+            "6110-24th-Ave-NW,-Apt-104,-Seattle,-WA-98107",
+            "7549-32nd-Ave-NW,-Unit-1299302P,-Seattle,-WA-98117",
+            "6408-14th-Ave-Nw-Unit-B,-Seattle,-WA-98107",
+            "6201-14th-Ave-NW,-Apt-103,-Seattle,-WA-98107",
+            "3005-Nw-92nd-St,-Unit-1299297P,-Seattle,-WA-98117",
+            "1531-Nw-61st-St,-Apt-204,-Seattle,-WA-98107"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.0,
+          "precision@10": 0.0,
+          "hits@10": 0
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "5117-2nd-Ave-NW,-Seattle,-WA-98107",
+            "6110-24th-Ave-NW,-Apt-104,-Seattle,-WA-98107",
+            "1440-Nw-60th-St,-Apt-1,-Seattle,-WA-98107",
+            "1446-Nw-62nd-St,-Apt-101,-Seattle,-WA-98107",
+            "2405-Nw-65th-St,-Apt-205,-Seattle,-WA-98117",
+            "912-Nw-56th-St,-Unit-713,-Seattle,-WA-98107",
+            "6408-14th-Ave-Nw-Unit-B,-Seattle,-WA-98107",
+            "1521-Nw-54th-St,-Apt-507,-Seattle,-WA-98107",
+            "6200-24th-Ave-NW,-Apt-301,-Seattle,-WA-98107",
+            "1540-Nw-52nd-St,-Apt-2,-Seattle,-WA-98107"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.25,
+          "precision@3": 0.3333333333333333,
+          "hits@3": 1,
+          "recall@5": 0.75,
+          "precision@5": 0.6,
+          "hits@5": 3,
+          "recall@10": 0.75,
+          "precision@10": 0.3,
+          "hits@10": 3
+        }
+      }
+    },
+    {
+      "id": "q17",
+      "query": "Studio under $1,900 in Central Seattle",
+      "notes": "Four lowest-priced Central studios at or below $1,900.",
+      "relevant_ids": [
+        "2202-E-Olive-St,-Seattle,-WA-98122",
+        "1633-Melrose-Ave,-Seattle,-WA-98122",
+        "1100-23rd-Ave,-Seattle,-WA-98122",
+        "1523-E-Madison-St,-Seattle,-WA-98122"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "1401-Nw-90th-St,-Seattle,-WA-98117",
+            "1100-23rd-Ave,-Seattle,-WA-98122",
+            "1711-12th-Ave,-Seattle,-WA-98122",
+            "4229-7th-Ave-NE,-Seattle,-WA-98105",
+            "301-12th-Ave,-Unit-409,-Seattle,-WA-98122",
+            "1319-Ne-65th-St,-Seattle,-WA-98115",
+            "4751-21st-Ave-NE,-Seattle,-WA-98105",
+            "1102-8th-Ave,-Seattle,-WA-98101",
+            "155-21st-Ave,-Seattle,-WA-98122",
+            "120-10th-Ave-E,-Seattle,-WA-98102"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.25,
+          "precision@3": 0.3333333333333333,
+          "hits@3": 1,
+          "recall@5": 0.25,
+          "precision@5": 0.2,
+          "hits@5": 1,
+          "recall@10": 0.25,
+          "precision@10": 0.1,
+          "hits@10": 1
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "1100-23rd-Ave,-Seattle,-WA-98122",
+            "1711-12th-Ave,-Seattle,-WA-98122",
+            "301-12th-Ave,-Unit-409,-Seattle,-WA-98122",
+            "155-21st-Ave,-Seattle,-WA-98122",
+            "412-11th-Ave,-Apt-510,-Seattle,-WA-98122",
+            "300-10th-Ave,-Unit-B101,-Seattle,-WA-98122",
+            "1401-Nw-90th-St,-Seattle,-WA-98117",
+            "4229-7th-Ave-NE,-Seattle,-WA-98105",
+            "1319-Ne-65th-St,-Seattle,-WA-98115",
+            "4751-21st-Ave-NE,-Seattle,-WA-98105"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.25,
+          "precision@3": 0.3333333333333333,
+          "hits@3": 1,
+          "recall@5": 0.25,
+          "precision@5": 0.2,
+          "hits@5": 1,
+          "recall@10": 0.25,
+          "precision@10": 0.1,
+          "hits@10": 1
+        }
+      }
+    },
+    {
+      "id": "q18",
+      "query": "1 bedroom under $2,200 in Belltown",
+      "notes": "Four lowest-priced one-bedroom Belltown listings at or below $2,200.",
+      "relevant_ids": [
+        "304-Bell-St,-Seattle,-WA-98121",
+        "2014-4th-Ave,-Seattle,-WA-98121",
+        "2201-3rd-Ave,-Apt-1106,-Seattle,-WA-98121",
+        "2700-4th-Ave,-Apt-603,-Seattle,-WA-98121"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "2415-2nd-Ave,-Apt-733,-Seattle,-WA-98121",
+            "2933-2nd-Ave,-Seattle,-WA-98121",
+            "2900-1st-Ave,-Apt-P204,-Seattle,-WA-98121",
+            "2929-1st-Ave,-Apt-721,-Seattle,-WA-98121",
+            "2801-1st-Ave,-Apt-216,-Seattle,-WA-98121",
+            "3023-1st-Ave,-Seattle,-WA-98121",
+            "2602-4th-Ave,-Seattle,-WA-98121",
+            "2230-4th-Ave,-Apt-104,-Seattle,-WA-98121",
+            "2700-4th-Ave,-Apt-603,-Seattle,-WA-98121",
+            "2230-4th-Ave,-Seattle,-WA-98121"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.25,
+          "precision@10": 0.1,
+          "hits@10": 1
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "2700-4th-Ave,-Apt-603,-Seattle,-WA-98121",
+            "2201-3rd-Ave,-Apt-1106,-Seattle,-WA-98121",
+            "2226-Elliott-Ave,-Seattle,-WA-98121",
+            "2014-4th-Ave,-Seattle,-WA-98121",
+            "304-Bell-St,-Seattle,-WA-98121",
+            "2415-2nd-Ave,-Apt-733,-Seattle,-WA-98121",
+            "910-Lenora-St,-Apt-S1201,-Seattle,-WA-98121",
+            "910-Lenora-St,-Apt-302,-Seattle,-WA-98121",
+            "2933-2nd-Ave,-Seattle,-WA-98121",
+            "2900-1st-Ave,-Apt-P204,-Seattle,-WA-98121"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.5,
+          "precision@3": 0.6666666666666666,
+          "hits@3": 2,
+          "recall@5": 1.0,
+          "precision@5": 0.8,
+          "hits@5": 4,
+          "recall@10": 1.0,
+          "precision@10": 0.4,
+          "hits@10": 4
+        }
+      }
+    },
+    {
+      "id": "q19",
+      "query": "3 bedroom under $4,000 in North Seattle",
+      "notes": "Four lowest-priced three-bedroom North Seattle listings at or below $4,000.",
+      "relevant_ids": [
+        "2302-Ne-94th-St,-Seattle,-WA-98115",
+        "111-Ne-92nd-St,-Seattle,-WA-98115",
+        "8230-17th-Ave-Ne-Unit-A,-Seattle,-WA-98115",
+        "8536-22nd-Pl-NE,-Seattle,-WA-98115"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "6341-4th-Ave-NE,-Seattle,-WA-98115",
+            "3602-Ne-73rd-Pl,-Apt-4,-Seattle,-WA-98115",
+            "12308-35th-Ave-NE,-Seattle,-WA-98125",
+            "14025-35th-Ave-NE,-Seattle,-WA-98125",
+            "13727-35th-Ave-Ne-Unit-C,-Seattle,-WA-98125",
+            "11300-5th-Ave-NE,-Apt-3,-Seattle,-WA-98125",
+            "3018-Ne-137th-St,-Apt-3,-Seattle,-WA-98125",
+            "12512-35th-Ave-Ne-Unit-F,-Seattle,-WA-98125",
+            "12549-Roosevelt-Way-NE,-Apt-4,-Seattle,-WA-98125",
+            "12509-35th-Ave-NE,-Seattle,-WA-98125"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.0,
+          "precision@10": 0.0,
+          "hits@10": 0
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "8536-22nd-Pl-NE,-Seattle,-WA-98115",
+            "2302-Ne-94th-St,-Seattle,-WA-98115",
+            "7716-36th-Ave-NE,-Seattle,-WA-98115",
+            "823-Ne-70th-St,-Seattle,-WA-98115",
+            "6341-4th-Ave-NE,-Seattle,-WA-98115",
+            "3602-Ne-73rd-Pl,-Apt-4,-Seattle,-WA-98115",
+            "14025-35th-Ave-NE,-Seattle,-WA-98125",
+            "12512-35th-Ave-Ne-Unit-F,-Seattle,-WA-98125",
+            "12549-Roosevelt-Way-NE,-Apt-4,-Seattle,-WA-98125",
+            "14015-35th-Ave-Ne-Apt-B,-Seattle,-WA-98125"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.5,
+          "precision@3": 0.6666666666666666,
+          "hits@3": 2,
+          "recall@5": 0.5,
+          "precision@5": 0.4,
+          "hits@5": 2,
+          "recall@10": 0.5,
+          "precision@10": 0.2,
+          "hits@10": 2
+        }
+      }
+    },
+    {
+      "id": "q20",
+      "query": "1 bedroom apartment under $1,900 in Delridge",
+      "notes": "All one-bedroom Delridge apartments at or below $1,900.",
+      "relevant_ids": [
+        "9200-2nd-Ave-SW,-Seattle,-WA-98106",
+        "8447-Delridge-Unit-B-Way-SW,-Unit-B2,-Seattle,-WA-98106",
+        "9000-20th-Ave-SW,-Seattle,-WA-98106"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "8447-Delridge-Unit-B-Way-SW,-Unit-B2,-Seattle,-WA-98106",
+            "4848A-Delridge-Way-SW,-Unit-A,-Seattle,-WA-98106",
+            "9051-20th-Ave-SW,-Seattle,-WA-98106",
+            "9000-20th-Ave-SW,-Seattle,-WA-98106",
+            "4121-21st-Ave-SW,-Seattle,-WA-98106",
+            "4726-Delridge-Way-SW,-Seattle,-WA-98106",
+            "9256-21st-Ave-SW,-Seattle,-WA-98106",
+            "9711-11th-Ave-SW,-Seattle,-WA-98106",
+            "7116-27th-Ave-SW,-Seattle,-WA-98106",
+            "9200-2nd-Ave-SW,-Seattle,-WA-98106"
+          ],
+          "relevant_count": 3,
+          "recall@3": 0.3333333333333333,
+          "precision@3": 0.3333333333333333,
+          "hits@3": 1,
+          "recall@5": 0.6666666666666666,
+          "precision@5": 0.4,
+          "hits@5": 2,
+          "recall@10": 1.0,
+          "precision@10": 0.3,
+          "hits@10": 3
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "8447-Delridge-Unit-B-Way-SW,-Unit-B2,-Seattle,-WA-98106",
+            "9000-20th-Ave-SW,-Seattle,-WA-98106",
+            "9200-2nd-Ave-SW,-Seattle,-WA-98106",
+            "9256-21st-Ave-SW,-Seattle,-WA-98106",
+            "7160-27th-Ave-Sw-Unit-A,-Seattle,-WA-98106",
+            "6368-23rd-Ave-SW,-Seattle,-WA-98106",
+            "9051-20th-Ave-SW,-Seattle,-WA-98106",
+            "6701-39th-Ave-Sw-Unit-C,-Seattle,-WA-98136",
+            "4801-Fauntleroy-Way-SW,-Unit-111,-Seattle,-WA-98116",
+            "9416-1st-Ave-NE,-Apt-108,-Seattle,-WA-98115"
+          ],
+          "relevant_count": 3,
+          "recall@3": 1.0,
+          "precision@3": 1.0,
+          "hits@3": 3,
+          "recall@5": 1.0,
+          "precision@5": 0.6,
+          "hits@5": 3,
+          "recall@10": 1.0,
+          "precision@10": 0.3,
+          "hits@10": 3
+        }
+      }
+    },
+    {
+      "id": "q21",
+      "query": "2 bedroom under $2,700 in Mount Baker",
+      "notes": "All two-bedroom Mount Baker listings at or below $2,700.",
+      "relevant_ids": [
+        "3315-Claremont-Ave-S,-Apt-4,-Seattle,-WA-98144",
+        "1484-S-Columbian-Way,-Seattle,-WA-98144",
+        "826-28th-Ave-S,-Seattle,-WA-98144",
+        "3440-14th-Ave-S,-Apt-101,-Seattle,-WA-98144"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "1347-15th-Ave-S,-Apt-2,-Seattle,-WA-98144",
+            "3440-14th-Ave-S,-Apt-101,-Seattle,-WA-98144",
+            "1542-15th-Ave-S-Apt-B,-Seattle,-WA-98144",
+            "3501-14th-Ave-S,-Seattle,-WA-98144",
+            "2513-13th-Ave-SE,-Seattle,-WA-98144",
+            "532-24th-Ave-S-Unit-B,-Seattle,-WA-98144",
+            "308-22nd-Ave-S,-Seattle,-WA-98144",
+            "1527-12th-Ave-S,-Apt-204,-Seattle,-WA-98144",
+            "2414-13th-Ave-S,-Seattle,-WA-98144",
+            "140-23rd-Ave-S,-Seattle,-WA-98144"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.25,
+          "precision@3": 0.3333333333333333,
+          "hits@3": 1,
+          "recall@5": 0.25,
+          "precision@5": 0.2,
+          "hits@5": 1,
+          "recall@10": 0.25,
+          "precision@10": 0.1,
+          "hits@10": 1
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "3440-14th-Ave-S,-Apt-101,-Seattle,-WA-98144",
+            "826-28th-Ave-S,-Seattle,-WA-98144",
+            "1542-15th-Ave-S-Apt-B,-Seattle,-WA-98144",
+            "2513-13th-Ave-SE,-Seattle,-WA-98144",
+            "3415-Beacon-Ave-S-Unit-B,-Seattle,-WA-98144",
+            "3415-Beacon-Ave-S,-Seattle,-WA-98144",
+            "1347-15th-Ave-S,-Apt-2,-Seattle,-WA-98144",
+            "3501-14th-Ave-S,-Seattle,-WA-98144",
+            "308-22nd-Ave-S,-Seattle,-WA-98144",
+            "1527-12th-Ave-S,-Apt-204,-Seattle,-WA-98144"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.5,
+          "precision@3": 0.6666666666666666,
+          "hits@3": 2,
+          "recall@5": 0.5,
+          "precision@5": 0.4,
+          "hits@5": 2,
+          "recall@10": 0.5,
+          "precision@10": 0.2,
+          "hits@10": 2
+        }
+      }
+    },
+    {
+      "id": "q22",
+      "query": "2 bedroom condo under $3,200 in Madison Park",
+      "notes": "Hard case: the snapshot has no listing satisfying all stated constraints.",
+      "relevant_ids": [],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "1810-43rd-Ave-E,-Unit-B202,-Seattle,-WA-98112",
+            "215-24th-Ave-E-Unit-C,-Seattle,-WA-98112",
+            "535-20th-Ave-E,-Seattle,-WA-98112",
+            "923-23rd-Ave-E,-Seattle,-WA-98112",
+            "521-16th-Ave-E,-Unit-8,-Seattle,-WA-98112",
+            "221-24th-Ave-E-Unit-D,-Seattle,-WA-98112",
+            "513-20th-Ave-E-Unit-D,-Seattle,-WA-98112",
+            "224-23rd-Ave-E,-Unit-302,-Seattle,-WA-98112",
+            "220-23rd-Ave-E,-Apt-100,-Seattle,-WA-98112",
+            "615-14th-Ave-E,-Seattle,-WA-98112"
+          ],
+          "relevant_count": 0,
+          "recall@3": null,
+          "precision@3": null,
+          "hits@3": null,
+          "recall@5": null,
+          "precision@5": null,
+          "hits@5": null,
+          "recall@10": null,
+          "precision@10": null,
+          "hits@10": null
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "221-24th-Ave-E-Unit-D,-Seattle,-WA-98112",
+            "517-30th-Ave-E,-Seattle,-WA-98112",
+            "605-15th-Ave-E,-Apt-101,-Seattle,-WA-98112",
+            "1810-43rd-Ave-E,-Unit-B202,-Seattle,-WA-98112",
+            "535-20th-Ave-E,-Seattle,-WA-98112",
+            "521-16th-Ave-E,-Unit-8,-Seattle,-WA-98112",
+            "215-17th-Ave-E,---10,-Seattle,-WA-98112",
+            "215-24th-Ave-E-Unit-C,-Seattle,-WA-98112",
+            "224-23rd-Ave-E,-Unit-302,-Seattle,-WA-98112",
+            "615-14th-Ave-E,-Seattle,-WA-98112"
+          ],
+          "relevant_count": 0,
+          "recall@3": null,
+          "precision@3": null,
+          "hits@3": null,
+          "recall@5": null,
+          "precision@5": null,
+          "hits@5": null,
+          "recall@10": null,
+          "precision@10": null,
+          "hits@10": null
+        }
+      }
+    },
+    {
+      "id": "q23",
+      "query": "1 bedroom under $2,200 in Fremont/Wallingford",
+      "notes": "Four lowest-priced one-bedroom 98103 listings at or below $2,200.",
+      "relevant_ids": [
+        "2141-N-61st-St,-Seattle,-WA-98103",
+        "921-N-96th-St,-Apt-12,-Seattle,-WA-98103",
+        "921-N-96th-St,-Apt-13,-Seattle,-WA-98103",
+        "9244-Greenwood-Ave-N,-Apt-2,-Seattle,-WA-98103"
+      ],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "4512-Fremont-Ave-N,-Apt-1,-Seattle,-WA-98103",
+            "7121-Linden-Ave-N,-Apt-204,-Seattle,-WA-98103",
+            "121-N-46th-St,-Apt-101,-Seattle,-WA-98103",
+            "9545-Wallingford-Ave-N,-Seattle,-WA-98103",
+            "4425-Fremont-Ave-N-Unit-B,-Seattle,-WA-98103",
+            "921-N-96th-St,-Apt-14,-Seattle,-WA-98103",
+            "4512-Fremont-Ave-N,-Apt-6,-Seattle,-WA-98103",
+            "949-N-80th-St,-Apt-102,-Seattle,-WA-98103",
+            "8203-Wallingford-Ave-N,-Seattle,-WA-98103",
+            "9547-Wallingford-Ave-N,-Seattle,-WA-98103"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.0,
+          "precision@5": 0.0,
+          "hits@5": 0,
+          "recall@10": 0.0,
+          "precision@10": 0.0,
+          "hits@10": 0
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "4512-Fremont-Ave-N,-Apt-1,-Seattle,-WA-98103",
+            "7121-Linden-Ave-N,-Apt-204,-Seattle,-WA-98103",
+            "921-N-96th-St,-Apt-14,-Seattle,-WA-98103",
+            "4512-Fremont-Ave-N,-Apt-6,-Seattle,-WA-98103",
+            "2141-N-61st-St,-Seattle,-WA-98103",
+            "2006-1-2-N-78th-St,-Seattle,-WA-98103",
+            "1151-N-94th-St,-Apt-32,-Seattle,-WA-98103",
+            "9244-Greenwood-Ave-N,-Apt-2,-Seattle,-WA-98103",
+            "2113-N-37th-St,-Apt-1,-Seattle,-WA-98103",
+            "921-N-96th-St,-Apt-16,-Seattle,-WA-98103"
+          ],
+          "relevant_count": 4,
+          "recall@3": 0.0,
+          "precision@3": 0.0,
+          "hits@3": 0,
+          "recall@5": 0.25,
+          "precision@5": 0.2,
+          "hits@5": 1,
+          "recall@10": 0.5,
+          "precision@10": 0.2,
+          "hits@10": 2
+        }
+      }
+    },
+    {
+      "id": "q24",
+      "query": "2 bedroom under $2,000 near Capitol Hill with parking",
+      "notes": "Hard case: parking is not represented in the frozen snapshot, so relevance cannot be labeled.",
+      "relevant_ids": [],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "2919-Franklin-Ave-E,-Apt-2F,-Seattle,-WA-98102",
+            "745-Summit-Ave-E,-Apt-204,-Seattle,-WA-98102",
+            "210-10th-Ave-E,-Apt-201,-Seattle,-WA-98102",
+            "2210-Franklin-Ave-E,-Seattle,-WA-98102",
+            "121-12th-Ave-E,-Unit-102,-Seattle,-WA-98102",
+            "414-E-Mercer-St,-Apt-2,-Seattle,-WA-98102",
+            "921-10th-Ave-E-Unit-B,-Seattle,-WA-98102",
+            "421-10th-Ave-E-Apt-C,-Seattle,-WA-98102",
+            "2600-Eastlake-Ave-E,-Apt-204,-Seattle,-WA-98102",
+            "219-Harvard-Ave-E,-Seattle,-WA-98102"
+          ],
+          "relevant_count": 0,
+          "recall@3": null,
+          "precision@3": null,
+          "hits@3": null,
+          "recall@5": null,
+          "precision@5": null,
+          "hits@5": null,
+          "recall@10": null,
+          "precision@10": null,
+          "hits@10": null
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "745-Summit-Ave-E,-Apt-204,-Seattle,-WA-98102",
+            "210-10th-Ave-E,-Apt-201,-Seattle,-WA-98102",
+            "2210-Franklin-Ave-E,-Seattle,-WA-98102",
+            "921-10th-Ave-E-Unit-B,-Seattle,-WA-98102",
+            "2600-Eastlake-Ave-E,-Apt-204,-Seattle,-WA-98102",
+            "219-Harvard-Ave-E,-Seattle,-WA-98102",
+            "421-Bellevue-Ave-E,-Seattle,-WA-98102",
+            "3150-Fairview-Ave-E,-Apt-401,-Seattle,-WA-98102",
+            "2343-10th-Ave-E-Unit-E,-Seattle,-WA-98102",
+            "3150-Fairview-Ave-E,-Apt-201,-Seattle,-WA-98102"
+          ],
+          "relevant_count": 0,
+          "recall@3": null,
+          "precision@3": null,
+          "hits@3": null,
+          "recall@5": null,
+          "precision@5": null,
+          "hits@5": null,
+          "recall@10": null,
+          "precision@10": null,
+          "hits@10": null
+        }
+      }
+    },
+    {
+      "id": "q25",
+      "query": "Pet-friendly studio under $1,600 in Ballard",
+      "notes": "Hard case: pet policy is not represented in the frozen snapshot, so relevance cannot be labeled.",
+      "relevant_ids": [],
+      "configs": {
+        "baseline": {
+          "retrieved_ids": [
+            "1443-Nw-63rd-St,-Seattle,-WA-98107",
+            "1401-Nw-90th-St,-Seattle,-WA-98117",
+            "5814-22nd-Ave-NW,-Seattle,-WA-98107",
+            "1762-Nw-59th-St,-Apt-101,-Seattle,-WA-98107",
+            "1762-Nw-59th-St,-Apt-305,-Seattle,-WA-98107",
+            "312-Nw-85th-St,-Seattle,-WA-98117",
+            "124-W-Garfield-St,-Seattle,-WA-98119",
+            "5227-Leary-Ave-NW,-Seattle,-WA-98107",
+            "9030-Greenwood-Ave-N,-Apt-106,-Seattle,-WA-98103",
+            "9030-Greenwood-Ave-N,-Apt-201,-Seattle,-WA-98103"
+          ],
+          "relevant_count": 0,
+          "recall@3": null,
+          "precision@3": null,
+          "hits@3": null,
+          "recall@5": null,
+          "precision@5": null,
+          "hits@5": null,
+          "recall@10": null,
+          "precision@10": null,
+          "hits@10": null
+        },
+        "constraint_rerank": {
+          "retrieved_ids": [
+            "1443-Nw-63rd-St,-Seattle,-WA-98107",
+            "1401-Nw-90th-St,-Seattle,-WA-98117",
+            "5814-22nd-Ave-NW,-Seattle,-WA-98107",
+            "1762-Nw-59th-St,-Apt-101,-Seattle,-WA-98107",
+            "1762-Nw-59th-St,-Apt-305,-Seattle,-WA-98107",
+            "5227-Leary-Ave-NW,-Seattle,-WA-98107",
+            "1731-Nw-57th-St,-Seattle,-WA-98107",
+            "312-Nw-85th-St,-Seattle,-WA-98117",
+            "124-W-Garfield-St,-Seattle,-WA-98119",
+            "9030-Greenwood-Ave-N,-Apt-106,-Seattle,-WA-98103"
+          ],
+          "relevant_count": 0,
+          "recall@3": null,
+          "precision@3": null,
+          "hits@3": null,
+          "recall@5": null,
+          "precision@5": null,
+          "hits@5": null,
+          "recall@10": null,
+          "precision@10": null,
+          "hits@10": null
+        }
+      }
+    }
+  ],
+  "generation_summary": {
+    "judged_query_count": 25,
+    "faithfulness_average": 4.72,
+    "relevance_average": 4.76
+  },
+  "generation_queries": [
+    {
+      "id": "q01",
+      "query": "Studio under $1,800 in Capitol Hill",
+      "answer": "Here are two great studio options in Capitol Hill that fit your budget:\n\n1. **$1,150 / studio \u2014 215\u202f13th\u202fAve\u202fE**\n   - Price: $1,150/month\n   - Address: 215\u202f13th\u202fAve\u202fE, Seattle, WA\u202f98102\n   - Size: 290\u202fsq\u202fft\n   - Days on Market: 611\n\n2. **$1,330 / studio \u2014 120\u202f10th\u202fAve\u202fE**\n   - Price: $1,330/month\n   - Address: 120\u202f10th\u202fAve\u202fE, Seattle, WA\u202f98102\n   - Size: 335\u202fsq\u202fft\n   - Days on Market: 884\n\nBoth units are currently active and under your $1,800 limit. Let me know if you\u2019d like more details or want to schedule a viewing!",
+      "context_ids": [
+        "215-13th-Ave-E,-Seattle,-WA-98102",
+        "406-Summit-Ave-E,-Seattle,-WA-98102",
+        "120-10th-Ave-E,-Seattle,-WA-98102",
+        "2919-Franklin-Ave-E,-Apt-1E,-Seattle,-WA-98102"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "All listed facts are directly supported by the retrieved listings and the answer fully addresses the user\u2019s request."
+    },
+    {
+      "id": "q02",
+      "query": "1 bedroom under $2,100 in Ballard",
+      "answer": "Here\u2019s a 1\u2011bedroom option in Ballard that fits your budget:\n\n| Property | Price | Address | Bedrooms | Bathrooms | Sq\u202fft | Status |\n|----------|-------|---------|----------|-----------|-------|--------|\n| $1,495 / 1br \u2014 2250\u202fNW\u202f58th\u202fSt, Unit\u202f101 | **$1,495** | 2250\u202fNW\u202f58th\u202fSt, Unit\u202f101, Seattle, WA\u202f98107 | 1 | 1 | 659 | Active (listed 2026\u201109\u201112, 1 day on market) |\n\n- **Type:** Condo\n- **Neighborhood:** Ballard\n- **Square footage:** 659\u202fsq\u202fft\n- **Price per sq\u202fft:** ~$2.27\n\nThis is the only 1\u2011bedroom listing in Ballard that\u2019s under $2,100 in the data you provided. If you\u2019d like more details or to schedule a viewing, let me know!",
+      "context_ids": [
+        "5117-2nd-Ave-NW,-Seattle,-WA-98107",
+        "2250-Nw-58th-St,-Unit-101,-Seattle,-WA-98107",
+        "6110-24th-Ave-NW,-Apt-104,-Seattle,-WA-98107",
+        "1401-Nw-90th-St,-Seattle,-WA-98117"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "The answer accurately cites the single 1\u2011bedroom listing under $2,100 from the retrieved data and fully addresses the user\u2019s request."
+    },
+    {
+      "id": "q03",
+      "query": "2 bedroom under $2,800 in Fremont/Wallingford",
+      "answer": "I couldn't find any 2\u2011bedroom listings in Fremont/Wallingford priced under $2,800.",
+      "context_ids": [
+        "9545-Wallingford-Ave-N,-Seattle,-WA-98103",
+        "7121-Linden-Ave-N,-Apt-204,-Seattle,-WA-98103",
+        "4512-Fremont-Ave-N,-Apt-1,-Seattle,-WA-98103",
+        "4425-Fremont-Ave-N-Unit-B,-Seattle,-WA-98103"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "The answer correctly states that no 2\u2011bedroom listings under $2,800 exist, which is supported by the retrieved listings."
+    },
+    {
+      "id": "q04",
+      "query": "2 bedroom under $2,600 in West Seattle",
+      "answer": "I\u2019m sorry, but I don\u2019t have any 2\u2011bedroom listings in West Seattle that are priced under $2,600.",
+      "context_ids": [
+        "9200-2nd-Ave-SW,-Seattle,-WA-98106",
+        "2713-Ne-94th-St,-Unit-2,-Seattle,-WA-98115",
+        "5117-2nd-Ave-NW,-Seattle,-WA-98107",
+        "521-2nd-Ave-W,-Seattle,-WA-98119"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "Answer is fully supported by retrieved listings and directly addresses the request."
+    },
+    {
+      "id": "q05",
+      "query": "3 bedroom under $3,500 in Rainier Valley",
+      "answer": "Here\u2019s the only 3\u2011bedroom listing in Rainier\u202fValley that\u2019s priced under\u202f$3,500:\n\n- **Property**: 3924\u202fS\u202fBrandon\u202fSt, Unit\u202fA\n- **Price**: $3,400\n- **Bedrooms**: 3\n- **Bathrooms**: 4\n- **Square footage**: 1,490\u202fsq\u202fft\n- **Address**: 3924\u202fS\u202fBrandon\u202fSt, Unit\u202fA, Seattle, WA\u202f98118\n- **Status**: Active (just listed)\n\nNo other 3\u2011bedroom listings in Rainier\u202fValley are currently listed for under $3,500. If you\u2019d like more details or to schedule a viewing, let me know!",
+      "context_ids": [
+        "6526-Rainier-Ave-S,-Apt-3,-Seattle,-WA-98118",
+        "3924-S-Brandon-St,-Unit-A,-Seattle,-WA-98118",
+        "4029-Rainier-Ave-S,-Apt-206,-Seattle,-WA-98118",
+        "4029-Rainier-Ave-S,-Apt-307,-Seattle,-WA-98118"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "Answer directly cites the retrieved 3\u2011bedroom listing under $3,500 and confirms no other such listings exist, fully matching the query."
+    },
+    {
+      "id": "q06",
+      "query": "Studio under $1,700 in the U-District",
+      "answer": "Here are two studio options in the U\u2011District that fit your budget:\n\n1. **5035\u202f15th\u202fAve\u202fNE** \u2013 $1,325/month, 475\u202fsq\u202fft, just 1 day on market.\n2. **5625\u202f15th\u202fAve\u202fNE** \u2013 $1,250/month, 578\u202fsq\u202fft, 340 days on market.\n\nBoth are studios under $1,700 and currently available. Let me know if you\u2019d like more details or to schedule a viewing.",
+      "context_ids": [
+        "5035-15th-Ave-NE,-Seattle,-WA-98105",
+        "5625-15th-Ave-NE,-Seattle,-WA-98105",
+        "5608-15th-Ave-NE,-Apt-205,-Seattle,-WA-98105",
+        "4757-Thackeray-Pl-NE,-Unit-3,-Seattle,-WA-98105"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "All claims are directly supported by the retrieved listings and the answer fully addresses the user's request."
+    },
+    {
+      "id": "q07",
+      "query": "1 bedroom under $2,000 in Northgate",
+      "answer": "Here are three 1\u2011bedroom apartments in Northgate that are currently listed for under $2,000:\n\n1. **14314\u202f32nd\u202fAve\u202fNE** \u2013 $1,380, 500\u202fsq\u202fft, 1,152 days on market. Longest\u2011listed unit, great for a steady, low\u2011price option.\n2. **3201\u202fNe\u202f120th\u202fSt** \u2013 $1,495, 680\u202fsq\u202fft, 282 days on market. Slightly larger than #1, still well under budget.\n3. **10519\u201110523\u202f24th\u202fAve\u202fNE** \u2013 $1,495, 745\u202fsq\u202fft, 75 days on market. Newest listing; likely to be available soon.\n\nAll three are active listings in Northgate and comfortably below your $2,000 ceiling. If you\u2019d like more details on any of these units or help contacting the landlord/agency, just let me know!",
+      "context_ids": [
+        "14314-32nd-Ave-NE,-Seattle,-WA-98125",
+        "10519-10523-24th-Ave-NE,-Seattle,-WA-98125",
+        "3201-Ne-120th-St,-Seattle,-WA-98125",
+        "11300-5th-Ave-NE,-Apt-2,-Seattle,-WA-98125"
+      ],
+      "faithfulness": 3,
+      "relevance": 3,
+      "rationale": "The answer correctly lists two 1\u2011bedroom units but mistakenly includes a 2\u2011bedroom listing as a 1\u2011bedroom option, violating the user\u2019s bedroom requirement."
+    },
+    {
+      "id": "q08",
+      "query": "2 bedroom under $3,000 in Queen Anne",
+      "answer": "I couldn't find any 2\u2011bedroom apartments in Queen Anne listed for under $3,000.",
+      "context_ids": [
+        "330-3rd-Ave-W,-Seattle,-WA-98119",
+        "617-3rd-Ave-W,-Seattle,-WA-98119",
+        "200-2nd-Ave-W,-Seattle,-WA-98119",
+        "521-2nd-Ave-W,-Seattle,-WA-98119"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "The answer correctly states that no 2\u2011bedroom listings under $3,000 exist, directly supported by the retrieved data."
+    },
+    {
+      "id": "q09",
+      "query": "1 bedroom under $2,300 in South Lake Union",
+      "answer": "Here\u2019s the only 1\u2011bedroom apartment in South\u202fLake\u202fUnion that\u2019s listed for under\u202f$2,300:\n\n- **Property:** 711\u202f2nd\u202fAve\u202fN\n- **Price:** $1,595 per month\n- **Bedrooms:** 1\n- **Bathrooms:** 1\n- **Square footage:** 610\u202fsq\u202fft\n- **Status:** Active\n- **Listed:** 2025\u201112\u201115\n- **Days on Market:** 272\n- **Address:** 711\u202f2nd\u202fAve\u202fN, Seattle, WA\u202f98109\n- **Neighborhood:** South Lake Union\n\nThis is the only listing that matches your criteria (1 bedroom, price <\u202f$2,300, South Lake Union).",
+      "context_ids": [
+        "711-2nd-Ave-N,-Seattle,-WA-98109",
+        "513-1st-Ave-N,-Unit-711,-Seattle,-WA-98109",
+        "513-1st-Ave-N,-Unit-704,-Seattle,-WA-98109",
+        "513-1st-Ave-N,-Unit-807,-Seattle,-WA-98109"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "All facts match the retrieved listing and the answer directly satisfies the user\u2019s criteria."
+    },
+    {
+      "id": "q10",
+      "query": "2 bedroom under $3,200 in Capitol Hill",
+      "answer": "Here\u2019s a 2\u2011bedroom option in Capitol Hill that fits your budget:\n\n**745 Summit Ave\u202fE, Apt\u202f204**\n- Rent: $2,695/month\n- Bedrooms: 2\n- Bathrooms: 2\n- Square footage: 891\u202fsq\u202fft\n- Status: Active (1 day on market)\n- Address: 745 Summit Ave\u202fE, Apt\u202f204, Seattle, WA\u202f98102\n\nThis is the only listing in the data that meets both your 2\u2011bedroom requirement and the $3,200 budget.",
+      "context_ids": [
+        "1029-Summit-Ave-E,-Apt-3,-Seattle,-WA-98102",
+        "745-Summit-Ave-E,-Apt-204,-Seattle,-WA-98102",
+        "2950-Fairview-Ave-E-Apt-C,-Seattle,-WA-98102",
+        "121-12th-Ave-E,-Unit-102,-Seattle,-WA-98102"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "Answer directly matches retrieved listing and satisfies constraints."
+    },
+    {
+      "id": "q11",
+      "query": "2 bedroom townhouse under $3,500",
+      "answer": "Here are the two 2\u2011bedroom townhouses that fit your budget of $3,500 or less:\n\n| Address | Neighborhood | Price | Beds | Baths | Sq Ft | Status |\n|---------|--------------|-------|------|-------|-------|--------|\n| **4061 Ne 50th St, Seattle, WA 98105** | U\u2011District | **$3,300** | 2 | 2 | 1,140 | Active |\n| **162A 15th Ave, Seattle, WA 98122** | Central | **$3,295** | 2 | 2.5 | 1,310 | Active |\n\nBoth properties are currently listed and have been on the market for just one day. If you\u2019d like more details (photos, floor plans, or to schedule a viewing), let me know!",
+      "context_ids": [
+        "4061-Ne-50th-St,-Seattle,-WA-98105",
+        "1531-18th-Ave,-Seattle,-WA-98122",
+        "162A-15th-Ave,-Seattle,-WA-98122",
+        "1413-E-Yesler-Way,-Unit-C,-Seattle,-WA-98122"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "All listed properties match the user\u2019s criteria and are directly supported by the retrieved data."
+    },
+    {
+      "id": "q12",
+      "query": "1 bedroom condo under $2,500 in Downtown",
+      "answer": "I\u2019m sorry, but I don\u2019t have any listings that match a 1\u2011bedroom condo in Downtown priced under $2,500.",
+      "context_ids": [
+        "1808-Minor-Ave,-Unit-A2308,-Seattle,-WA-98101",
+        "1902-2nd-Ave,-Seattle,-WA-98101",
+        "300-10th-Ave,-Unit-B101,-Seattle,-WA-98122",
+        "13727-35th-Ave-Ne-Unit-C,-Seattle,-WA-98125"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "Answer correctly states no matching listings based on retrieved data."
+    },
+    {
+      "id": "q13",
+      "query": "3 bedroom single family home under $4,000 in West Seattle",
+      "answer": "I\u2019m sorry, but I don\u2019t have any 3\u2011bedroom single\u2011family homes listed in West Seattle for under $4,000.",
+      "context_ids": [
+        "9435-36th-Ave-SW,-Seattle,-WA-98126",
+        "8607-35th-Ave-SW,-Seattle,-WA-98126",
+        "823-Ne-70th-St,-Seattle,-WA-98115",
+        "5225-36th-Ave-SW,-Seattle,-WA-98126"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "Answer correctly states no listings meet all criteria based on retrieved data."
+    },
+    {
+      "id": "q14",
+      "query": "2 bedroom apartment under $2,600 in Bitter Lake",
+      "answer": "Here\u2019s the only 2\u2011bedroom apartment in Bitter\u202fLake that fits your budget:\n\n| Property | Price | Beds | Baths | Sq\u202fft | Address | Days on Market |\n|----------|-------|------|-------|-------|---------|----------------|\n| 2312\u202fN\u202f134th\u202fSt, Apt\u202f6 | **$2,290** | 2 | 1.5 | 950 | 2312\u202fN\u202f134th\u202fSt, Apt\u202f6, Seattle, WA\u202f98133 | 748 |\n\n- **Price**: $2,290 \u2013 comfortably under your $2,600 limit.\n- **Size**: 950\u202fsq\u202fft, a good fit for a 2\u2011bedroom layout.\n- **Location**: Bitter\u202fLake neighborhood, 98133 ZIP.\n- **Status**: Active listing (as of 2024\u201108\u201126).\n\nIf you\u2019d like more details or to schedule a viewing, let me know!",
+      "context_ids": [
+        "2312-N-134th-St,-Apt-6,-Seattle,-WA-98133",
+        "2230-N-106th-St,-Apt-307,-Seattle,-WA-98133",
+        "2230-N-106th-St,-Apt-101,-Seattle,-WA-98133",
+        "625-N-130th-St,-Seattle,-WA-98133"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "All facts match the retrieved listing and the answer directly addresses the user\u2019s request."
+    },
+    {
+      "id": "q15",
+      "query": "4 bedroom under $4,500 in the U-District",
+      "answer": "I\u2019m not aware of any 4\u2011bedroom listings in the U\u2011District that are priced under $4,500.",
+      "context_ids": [
+        "3911-4th-Ave-Ne-Unit-D,-Seattle,-WA-98105",
+        "4728-4th-Ave-NE,-Unit-Upper,-Seattle,-WA-98105",
+        "2815-4th-Ave-W-Unit-C,-Seattle,-WA-98119",
+        "1421-4th-Ave-W,-Apt-202,-Seattle,-WA-98119"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "Answer correctly states no 4\u2011bedroom listings under $4,500 in U\u2011District based on retrieved data."
+    },
+    {
+      "id": "q16",
+      "query": "2 bedroom under $2,800 in Ballard",
+      "answer": "Here\u2019s a 2\u2011bedroom option in Ballard that fits your budget:\n\n- **Property:** 5117\u202f2nd\u202fAve\u202fNW\n- **Price:** $2,500\n- **Beds:** 2\n- **Baths:** 1\n- **Square footage:** 1,000\u202fsq\u202fft\n- **Status:** Active (just listed)\n\nThis is the only 2\u2011bedroom property in Ballard listed for under $2,800. The other 2\u2011bedroom listing in Ballard (912\u202fNW\u202f56th\u202fSt, Unit\u202f713) is $2,960, which is above your price limit.",
+      "context_ids": [
+        "5117-2nd-Ave-NW,-Seattle,-WA-98107",
+        "912-Nw-56th-St,-Unit-713,-Seattle,-WA-98107",
+        "1540-Nw-52nd-St,-Apt-2,-Seattle,-WA-98107",
+        "9244-Greenwood-Ave-N,-Apt-2,-Seattle,-WA-98103"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "Answer directly lists the only 2\u2011bedroom property in Ballard under $2,800, fully supported by retrieved listings."
+    },
+    {
+      "id": "q17",
+      "query": "Studio under $1,900 in Central Seattle",
+      "answer": "Here are two studio options in Central Seattle that fit your budget:\n\n1. **$1,100 / studio \u2014 1100\u202f23rd\u202fAve**\n   - Cost: $1,100/month\n   - Neighborhood: Central\n   - Address: 1100\u202f23rd\u202fAve, 98122\n   - Size: 400\u202fsq\u202fft\n   - Days on Market: 870\n   - Listing Date: 2024\u201104\u201126\n\n2. **$1,695 / studio \u2014 1711\u202f12th\u202fAve**\n   - Cost: $1,695/month\n   - Neighborhood: Central\n   - Address: 1711\u202f12th\u202fAve, 98122\n   - Size: 398\u202fsq\u202fft\n   - Days on Market: 884\n   - Listing Date: 2024\u201104\u201112\n\nBoth are well under your $1,900 limit. Let me know if you\u2019d like more details or want to schedule a viewing for either property.",
+      "context_ids": [
+        "1401-Nw-90th-St,-Seattle,-WA-98117",
+        "1100-23rd-Ave,-Seattle,-WA-98122",
+        "1711-12th-Ave,-Seattle,-WA-98122",
+        "4229-7th-Ave-NE,-Seattle,-WA-98105"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "Answer lists all Central Seattle studios under $1,900 from retrieved listings, directly addressing the request."
+    },
+    {
+      "id": "q18",
+      "query": "1 bedroom under $2,200 in Belltown",
+      "answer": "I\u2019m sorry, but I don\u2019t have any 1\u2011bedroom listings in Belltown that are priced under $2,200.",
+      "context_ids": [
+        "2415-2nd-Ave,-Apt-733,-Seattle,-WA-98121",
+        "2933-2nd-Ave,-Seattle,-WA-98121",
+        "2900-1st-Ave,-Apt-P204,-Seattle,-WA-98121",
+        "2929-1st-Ave,-Apt-721,-Seattle,-WA-98121"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "Answer correctly states no 1\u2011bedroom listings under $2,200 in Belltown based on the retrieved data."
+    },
+    {
+      "id": "q19",
+      "query": "3 bedroom under $4,000 in North Seattle",
+      "answer": "I\u2019m sorry, but I don\u2019t have any listings that match a 3\u2011bedroom home in North Seattle priced under $4,000.",
+      "context_ids": [
+        "6341-4th-Ave-NE,-Seattle,-WA-98115",
+        "3602-Ne-73rd-Pl,-Apt-4,-Seattle,-WA-98115",
+        "12308-35th-Ave-NE,-Seattle,-WA-98125",
+        "14025-35th-Ave-NE,-Seattle,-WA-98125"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "Answer correctly states no matching listings based on retrieved data."
+    },
+    {
+      "id": "q20",
+      "query": "1 bedroom apartment under $1,900 in Delridge",
+      "answer": "Here are the 1\u2011bedroom apartments in Delridge that are listed for under $1,900:\n\n- **$1,500 / 1br** \u2013 $1,500 per month, 8447 Delridge Unit\u202fB Way SW, Unit\u202fB2, Seattle, WA\u202f98106, 600\u202fsq\u202fft, 1 bed, 1 bath, 82 days on market.\n- **$1,694 / 1br** \u2013 $1,694 per month, 9000 20th Ave SW, Seattle, WA\u202f98106, 1 bed, 1 bath, 618 days on market.\n\nIf you\u2019d like more details or to schedule a viewing, let me know and I can help you find the contact information for the listing agent.",
+      "context_ids": [
+        "8447-Delridge-Unit-B-Way-SW,-Unit-B2,-Seattle,-WA-98106",
+        "4848A-Delridge-Way-SW,-Unit-A,-Seattle,-WA-98106",
+        "9051-20th-Ave-SW,-Seattle,-WA-98106",
+        "9000-20th-Ave-SW,-Seattle,-WA-98106"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "All listed apartments are directly supported by the retrieved data and fully answer the user\u2019s request."
+    },
+    {
+      "id": "q21",
+      "query": "2 bedroom under $2,700 in Mount Baker",
+      "answer": "Here\u2019s the only 2\u2011bedroom apartment in Mount\u202fBaker that fits your budget:\n\n**3440\u202f14th\u202fAve\u202fS, Apt\u202f101**\n- **Price:** $2,300 per month\n- **Beds:** 2\n- **Baths:** 1\n- **Square footage:** 950\u202fsq\u202fft\n- **Type:** Single\u2011family unit\n- **Status:** Active (listed 2026\u201109\u201112, 1 day on market)\n- **Location:** 3440\u202f14th\u202fAve\u202fS, Apt\u202f101, Seattle, WA\u202f98144 (Mount\u202fBaker neighborhood)\n\nThis is the only listing that meets your criteria of a 2\u2011bedroom unit under $2,700 in Mount\u202fBaker.",
+      "context_ids": [
+        "1347-15th-Ave-S,-Apt-2,-Seattle,-WA-98144",
+        "3440-14th-Ave-S,-Apt-101,-Seattle,-WA-98144",
+        "1542-15th-Ave-S-Apt-B,-Seattle,-WA-98144",
+        "3501-14th-Ave-S,-Seattle,-WA-98144"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "Answer correctly identifies the only 2\u2011bedroom listing under $2,700 in Mount\u202fBaker and provides accurate details from the retrieved data."
+    },
+    {
+      "id": "q22",
+      "query": "2 bedroom condo under $3,200 in Madison Park",
+      "answer": "I\u2019m not aware of any 2\u2011bedroom condos in Madison Park listed for under $3,200.",
+      "context_ids": [
+        "1810-43rd-Ave-E,-Unit-B202,-Seattle,-WA-98112",
+        "215-24th-Ave-E-Unit-C,-Seattle,-WA-98112",
+        "535-20th-Ave-E,-Seattle,-WA-98112",
+        "923-23rd-Ave-E,-Seattle,-WA-98112"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "The answer correctly states that no 2\u2011bedroom condo under $3,200 is present in the retrieved listings, fully addressing the user\u2019s request."
+    },
+    {
+      "id": "q23",
+      "query": "1 bedroom under $2,200 in Fremont/Wallingford",
+      "answer": "Here are two 1\u2011bedroom options in Fremont/Wallingford that are listed for under $2,200:\n\n1. **4512 Fremont Ave N, Apt 1** \u2013 $1,645 per month, 1 bedroom, 1 bathroom, 530\u202fsq\u202fft, apartment, 1 day on market.\n2. **7121 Linden Ave N, Apt 204** \u2013 $1,395 per month, 1 bedroom, 1 bathroom, 500\u202fsq\u202fft, apartment, 1 day on market.\n\nBoth units are currently active as of 2026\u201109\u201112.",
+      "context_ids": [
+        "4512-Fremont-Ave-N,-Apt-1,-Seattle,-WA-98103",
+        "7121-Linden-Ave-N,-Apt-204,-Seattle,-WA-98103",
+        "121-N-46th-St,-Apt-101,-Seattle,-WA-98103",
+        "9545-Wallingford-Ave-N,-Seattle,-WA-98103"
+      ],
+      "faithfulness": 5,
+      "relevance": 5,
+      "rationale": "All listed units are 1\u2011bedroom, under $2,200, and match the retrieved data."
+    },
+    {
+      "id": "q24",
+      "query": "2 bedroom under $2,000 near Capitol Hill with parking",
+      "answer": "I couldn't find any 2\u2011bedroom listings in the Capitol Hill area that are priced under $2,000 and include parking.",
+      "context_ids": [
+        "2919-Franklin-Ave-E,-Apt-2F,-Seattle,-WA-98102",
+        "745-Summit-Ave-E,-Apt-204,-Seattle,-WA-98102",
+        "210-10th-Ave-E,-Apt-201,-Seattle,-WA-98102",
+        "2210-Franklin-Ave-E,-Seattle,-WA-98102"
+      ],
+      "faithfulness": 4,
+      "relevance": 5,
+      "rationale": "Answer correctly states no listings under $2000, but claims none include parking which is unsupported."
+    },
+    {
+      "id": "q25",
+      "query": "Pet-friendly studio under $1,600 in Ballard",
+      "answer": "I\u2019m sorry, but I don\u2019t have information on whether these listings allow pets.",
+      "context_ids": [
+        "1443-Nw-63rd-St,-Seattle,-WA-98107",
+        "1401-Nw-90th-St,-Seattle,-WA-98117",
+        "5814-22nd-Ave-NW,-Seattle,-WA-98107",
+        "1762-Nw-59th-St,-Apt-101,-Seattle,-WA-98107"
+      ],
+      "faithfulness": 1,
+      "relevance": 1,
+      "rationale": "Answer does not provide requested info and lacks evidence."
+    }
+  ]
+}
