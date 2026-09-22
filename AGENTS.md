@@ -39,6 +39,8 @@ Listing/filter/import-guard tests always run. Retriever tests use a stub or tiny
 | `data/seattle_rentals.meta.json` | Snapshot `fetched_at` / query metadata |
 | `scripts/fetch_rentcast_listings.py` | Offline RentCast refresh (update / append / drop); **do not import from the app** |
 | `scripts/build_vector_store.py` | Offline FAISS build into gitignored `data/faiss/`; **do not import from the app** |
+| `scripts/push_huggingface_space.py` | Pushes `HEAD` to a Space and prepends `huggingface/space.yml` onto that README; **do not import from the app** |
+| `huggingface/space.yml` | Space card metadata (Docker SDK, port 8501). Kept out of `README.md` so GitHub does not render it as a table |
 | `leasegpt/retriever.py` | Chunking, FastEmbed (`BAAI/bge-small-en-v1.5`) + in-memory FAISS, `retrieve_sources` |
 | `leasegpt/generator.py` | RetrievalQA tool + `chat-conversational-react-description` agent |
 | `leasegpt/groq_chat.py` | LangChain 0.0.181 `SimpleChatModel` over the Groq SDK (`openai/gpt-oss-20b`) |
@@ -62,7 +64,7 @@ UI: `layout="centered"`, tabs **Chat / Sources / Listings**. Sidebar is the Groq
 - Pin LangChain at `0.0.181`. Casual upgrades break `initialize_agent` / `RetrievalQA`.
 - Escape listing text before `unsafe_allow_html`.
 - New sample listings: refresh `data/seattle_rentals.jsonl` with the fetch script (or add records there). Do not hardcode Craigslist ads back into `listings.py`.
-- Hosting: GitHub Pages cannot run this. Spaces use Docker (`Dockerfile` bakes FastEmbed weights). Community Cloud installs from `requirements.txt`. README YAML frontmatter is for Hugging Face.
+- Hosting: GitHub Pages cannot run this. Spaces use Docker (`Dockerfile` bakes FastEmbed weights). Community Cloud installs from `requirements.txt`. Space card YAML lives in `huggingface/space.yml` and is prepended only by `scripts/push_huggingface_space.py`. Do not put that block back at the top of `README.md`.
 
 ## Do not
 

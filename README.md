@@ -1,13 +1,3 @@
----
-title: LeaseGPT
-emoji: 🚪
-colorFrom: blue
-colorTo: green
-sdk: docker
-app_port: 8501
-pinned: false
----
-
 # LeaseGPT
 
 LeaseGPT is a RAG-based apartment leasing assistant. It retrieves from a frozen Seattle RentCast rental snapshot (FAISS + local FastEmbed embeddings) and answers as a conversational leasing agent in a Streamlit chat UI. Chat generation uses the Groq Python SDK (`openai/gpt-oss-20b`). This is a dated sample corpus, not live inventory.
@@ -91,11 +81,10 @@ Streamlit Spaces use the **Docker** SDK. As of 2026, creating Docker Spaces requ
 
 1. Create a Space: SDK **Docker**, hardware **CPU Basic**, public.
 2. Settings → Variables and secrets → add secret `GROQ_API_KEY` so visitors can chat without pasting a key (they share that Groq free-tier quota).
-3. Push this repo to the Space:
+3. Push this repo to the Space. Card metadata (`sdk: docker`, `app_port: 8501`, title, and colors) lives in [`huggingface/space.yml`](huggingface/space.yml) so this page opens on the project title. The script prepends that file to the Space README and pushes the current commit:
 
 ```sh
-git remote add space https://huggingface.co/spaces/<user>/leasegpt
-git push space HEAD:main
+uv run python scripts/push_huggingface_space.py https://huggingface.co/spaces/<user>/leasegpt
 ```
 
 The first boot downloads FastEmbed ONNX weights. Later cold starts after sleep are slower.
