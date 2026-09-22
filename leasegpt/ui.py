@@ -9,6 +9,8 @@ from leasegpt.listings import (
     filter_listings,
 )
 
+LISTINGS_CARD_LIMIT = 40
+
 EXAMPLE_QUERIES = [
     "2-bedroom under $2500 in Seattle",
     "What's available near UW in the U-District?",
@@ -110,11 +112,15 @@ def render_listings_tab():
     )
     neighborhood = st.selectbox("Neighborhood", NEIGHBORHOODS)
     filtered = filter_listings(price_range[0], price_range[1], neighborhood)
+    shown = filtered[:LISTINGS_CARD_LIMIT]
+    extra = ""
+    if len(filtered) > LISTINGS_CARD_LIMIT:
+        extra = f" · showing first {LISTINGS_CARD_LIMIT}"
     st.caption(
-        f"{len(filtered)} of {len(SAMPLE_LISTINGS)} listings · "
+        f"{len(filtered)} of {len(SAMPLE_LISTINGS)} listings{extra} · "
         f"{SNAPSHOT_LABEL} · Seattle"
     )
-    for listing in filtered:
+    for listing in shown:
         _listing_card(listing)
 
 

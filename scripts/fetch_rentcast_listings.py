@@ -23,7 +23,7 @@ QUERY = {
 }
 CONTACT_KEYS = ("phone", "email", "website")
 PAGE_SIZE = 500
-ADD_LISTINGS = 1000
+MAX_LISTINGS = 2000
 
 
 def _load_dotenv() -> None:
@@ -119,17 +119,59 @@ def _load_existing() -> list:
     return []
 
 
-def merge_listings(existing: list, incoming: list) -> tuple[list, int]:
-    """Keep existing order; append incoming records whose ids are new."""
-    seen = {_listing_id(item) for item in existing if _listing_id(item)}
-    added = []
+def merge_listings(
+    existing: list, incoming: list, *, drop_missing: bool = False
+) -> tuple[list, dict]:
+    """Update matching ids in place, append new ids, optionally drop unseen ids.
+
+    Keeps existing JSONL order so refreshes stay line-level diffs. Incoming
+    records with no id are ignored. When drop_missing is True (full API walk),
+    existing rows whose ids never appeared in incoming are removed.
+    """
+    incoming_by_id = {}
+    incoming_order = []
     for item in incoming:
         listing_id = _listing_id(item)
-        if not listing_id or listing_id in seen:
+        if not listing_id:
             continue
+        if listing_id not in incoming_by_id:
+            incoming_order.append(listing_id)
+        incoming_by_id[listing_id] = item
+
+    merged = []
+    seen = set()
+    updated = 0
+    for item in existing:
+        listing_id = _listing_id(item)
+        if listing_id in incoming_by_id:
+            fresh = incoming_by_id[listing_id]
+            merged.append(fresh)
+            seen.add(listing_id)
+            if fresh != item:
+                updated += 1
+        elif listing_id and not drop_missing:
+            merged.append(item)
+            seen.add(listing_id)
+
+    added = 0
+    for listing_id in incoming_order:
+        if listing_id in seen:
+            continue
+        merged.append(incoming_by_id[listing_id])
         seen.add(listing_id)
-        added.append(item)
-    return existing + added, len(added)
+        added += 1
+
+    dropped = 0
+    if drop_missing:
+        dropped = sum(
+            1 for item in existing if _listing_id(item) not in incoming_by_id
+        )
+    return merged, {
+        "updated": updated,
+        "added": added,
+        "dropped": dropped,
+        "kept": len(merged) - added,
+    }
 
 
 def fetch_page(api_key: str, offset: int, limit: int) -> list:
@@ -155,36 +197,43 @@ def fetch_page(api_key: str, offset: int, limit: int) -> list:
     return _parse_records(payload)
 
 
-def fetch_additional(api_key: str, existing_ids: set[str], add_count: int) -> tuple[list, int]:
+def fetch_snapshot(api_key: str, max_listings: int) -> tuple[list, int, bool]:
+    """Page through Active Seattle listings. complete is True if the API ended."""
     incoming = []
     offset = 0
     pages = 0
-    seen = set(existing_ids)
-    while len(incoming) < add_count:
+    seen: set[str] = set()
+    complete = False
+    while len(incoming) < max_listings:
         page = fetch_page(api_key, offset, PAGE_SIZE)
         pages += 1
         if not page:
+            complete = True
             break
+        stopped_early = False
         for record in page:
             listing_id = _listing_id(record)
             if not listing_id or listing_id in seen:
                 continue
             seen.add(listing_id)
             incoming.append(record)
-            if len(incoming) >= add_count:
+            if len(incoming) >= max_listings:
+                stopped_early = True
                 break
-        if len(page) < PAGE_SIZE:
+        if len(page) < PAGE_SIZE and not stopped_early:
+            complete = True
+            break
+        if stopped_early:
             break
         offset += PAGE_SIZE
-    return incoming, pages
+    return incoming, pages, complete
 
 
 def main() -> None:
     _load_dotenv()
     existing = _load_existing()
-    existing_ids = {_listing_id(item) for item in existing if _listing_id(item)}
-    incoming, pages = fetch_additional(_api_key(), existing_ids, ADD_LISTINGS)
-    listings, added = merge_listings(existing, incoming)
+    incoming, pages, complete = fetch_snapshot(_api_key(), MAX_LISTINGS)
+    listings, stats = merge_listings(existing, incoming, drop_missing=complete)
     LISTINGS_PATH.parent.mkdir(parents=True, exist_ok=True)
     write_jsonl(LISTINGS_PATH, listings)
     write_meta(
@@ -194,7 +243,8 @@ def main() -> None:
             "query": {
                 **QUERY,
                 "limit": PAGE_SIZE,
-                "added": ADD_LISTINGS,
+                "max_listings": MAX_LISTINGS,
+                "complete": complete,
             },
             "n_listings": len(listings),
         },
@@ -203,7 +253,9 @@ def main() -> None:
         LEGACY_JSON_PATH.unlink()
     print(
         f"Wrote {len(listings)} listings to {LISTINGS_PATH} "
-        f"({len(existing)} kept, {added} added, {pages} API pages)"
+        f"({stats['updated']} updated, {stats['added']} added, "
+        f"{stats['dropped']} dropped, {pages} API pages"
+        f"{', complete' if complete else ', partial — unseen ids kept'})"
     )
 
 
