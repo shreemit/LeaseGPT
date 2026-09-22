@@ -50,7 +50,9 @@ uv run streamlit run app.py
 
 3. Chat needs a free Groq API key ([console.groq.com](https://console.groq.com)). Paste it in the sidebar, or set `GROQ_API_KEY` in a local `.env` file (not committed). Retrieval and listing cards work without a Groq key.
 
-The checked-in RentCast snapshot (`data/seattle_rentals.jsonl`, with `fetched_at` in `data/seattle_rentals.meta.json`) is enough to run the app. It is a dated sample, not live inventory. Refresh it locally (50 free RentCast requests/month; do not call this from Streamlit):
+The checked-in snapshot is `data/seattle_rentals.jsonl` plus `data/seattle_rentals.meta.json` (`fetched_at` and query metadata). It is dated sample inventory, not live MLS. RentCast [API Terms](https://www.rentcast.io/terms-api) §1 allow storing, displaying, and distributing API Data; that snapshot is **not** covered by this repo’s MIT license (see `LICENSE`). Agent/office phones, emails, and websites are stripped before check-in. Do not share `RENTCAST_API_KEY`.
+
+Refresh locally (50 free RentCast requests/month; do not call this from Streamlit). The script updates matching ids, appends new ones, and drops listings that disappeared only when it finishes a full API page walk:
 
 ```sh
 RENTCAST_API_KEY=... uv run python scripts/fetch_rentcast_listings.py

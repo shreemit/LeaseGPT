@@ -38,14 +38,23 @@ class RedactListingTests(unittest.TestCase):
         self.assertEqual(cleaned["listingOffice"], {"name": "Example Realty"})
         self.assertEqual(record["listingAgent"]["phone"], "2065550100")
 
-    def test_merge_listings_keeps_existing_and_appends_new(self):
+    def test_merge_listings_updates_and_appends_without_drop(self):
         fetch = _load_fetch_module()
         existing = [{"id": "a", "price": 1}, {"id": "b", "price": 2}]
         incoming = [{"id": "b", "price": 99}, {"id": "c", "price": 3}]
-        merged, added = fetch.merge_listings(existing, incoming)
+        merged, stats = fetch.merge_listings(existing, incoming, drop_missing=False)
         self.assertEqual([item["id"] for item in merged], ["a", "b", "c"])
-        self.assertEqual(merged[1]["price"], 2)
-        self.assertEqual(added, 1)
+        self.assertEqual(merged[1]["price"], 99)
+        self.assertEqual(stats, {"updated": 1, "added": 1, "dropped": 0, "kept": 2})
+
+    def test_merge_listings_drops_missing_when_complete(self):
+        fetch = _load_fetch_module()
+        existing = [{"id": "a", "price": 1}, {"id": "b", "price": 2}]
+        incoming = [{"id": "b", "price": 99}, {"id": "c", "price": 3}]
+        merged, stats = fetch.merge_listings(existing, incoming, drop_missing=True)
+        self.assertEqual([item["id"] for item in merged], ["b", "c"])
+        self.assertEqual(merged[0]["price"], 99)
+        self.assertEqual(stats, {"updated": 1, "added": 1, "dropped": 1, "kept": 1})
 
     def test_jsonl_roundtrip(self):
         fetch = _load_fetch_module()
@@ -60,12 +69,21 @@ class RedactListingTests(unittest.TestCase):
                 path.unlink()
 
     def test_snapshot_maps_to_listings(self):
-        from leasegpt.listings import SAMPLE_LISTINGS, SNAPSHOT_LABEL, filter_listings
+        from hashlib import sha256
+
+        from leasegpt.listings import (
+            SAMPLE_LISTINGS,
+            SNAPSHOT_DIGEST,
+            SNAPSHOT_LABEL,
+            SNAPSHOT_PATH,
+            filter_listings,
+        )
 
         self.assertGreaterEqual(len(SAMPLE_LISTINGS), 12)
         self.assertTrue(SAMPLE_LISTINGS[0].raw.startswith("Title:"))
         self.assertIn("RentCast snapshot", SNAPSHOT_LABEL)
         self.assertNotIn("demo snapshot", SNAPSHOT_LABEL)
+        self.assertEqual(SNAPSHOT_DIGEST, sha256(SNAPSHOT_PATH.read_bytes()).hexdigest())
         u_district = filter_listings(0, 10_000, "U-District")
         self.assertTrue(u_district)
         self.assertTrue(all(item.neighborhood == "U-District" for item in u_district))
