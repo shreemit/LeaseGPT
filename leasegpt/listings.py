@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+from hashlib import sha256
 from pathlib import Path
 import json
 
@@ -171,6 +172,7 @@ def _listing_from_record(record: dict) -> Listing | None:
 
 
 _SNAPSHOT = _load_snapshot()
+SNAPSHOT_DIGEST = sha256(SNAPSHOT_PATH.read_bytes()).hexdigest()
 SNAPSHOT_FETCHED_AT = _snapshot_date(_SNAPSHOT.get("fetched_at") or "")
 if _SNAPSHOT.get("source") == "demo-placeholder":
     SNAPSHOT_LABEL = f"demo snapshot {SNAPSHOT_FETCHED_AT}"

@@ -6,7 +6,7 @@ from langchain.embeddings.base import Embeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 
-from leasegpt.listings import SAMPLE_LISTINGS, SNAPSHOT_FETCHED_AT
+from leasegpt.listings import SAMPLE_LISTINGS, SNAPSHOT_DIGEST, SNAPSHOT_FETCHED_AT
 
 FASTEMBED_MODEL = "BAAI/bge-small-en-v1.5"
 INDEX_DIR = Path(__file__).resolve().parent.parent / "data" / "faiss"
@@ -45,6 +45,7 @@ def get_text_chunks(selection: str):
 
 def _index_stamp():
     return {
+        "digest": SNAPSHOT_DIGEST,
         "fetched_at": SNAPSHOT_FETCHED_AT,
         "n_listings": len(SAMPLE_LISTINGS),
         "model": FASTEMBED_MODEL,
